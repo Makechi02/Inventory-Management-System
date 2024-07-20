@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.page-heading {
+    @apply font-extrabold text-2xl sm:text-3xl;
+}
+
+.add-btn {
+    @apply bg-orange-600 px-4 py-2 rounded-lg text-white;
+}
+
+.edit-btn {
+    @apply bg-blue-950 px-2 sm:px-4 py-1 text-gray-100 rounded-lg;
+}
+
+.delete-btn {
+    @apply bg-red-600 px-2 sm:px-4 py-1 text-gray-100 rounded-lg;
+}
+
+.input-box {
+    @apply flex flex-col gap-1;
+}
+
+table tr:nth-child(even) {
+    @apply bg-gray-100;
+}
+
+thead th:first-child {
+    @apply rounded-bl-lg;
+}
+
+thead th:last-child {
+    @apply rounded-br-lg;
+}
