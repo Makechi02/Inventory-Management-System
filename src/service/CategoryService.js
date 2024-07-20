@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const CATEGORIES_API_BASE_URL = "http://localhost:3000/api/categories";
+const CATEGORIES_API_BASE_URL = "/api/categories";
 
 const CategoryService = {
     getAllCategories: () => {
