@@ -9,7 +9,6 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "@vercel/speed-insights": "^1.0.10",
         "axios": "^1.7.2",
         "bcrypt": "^5.1.1",
         "mongodb": "^6.8.0",
