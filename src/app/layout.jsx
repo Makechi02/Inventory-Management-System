@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import {figtree, gfs_didot} from "@/app/font";
 
 export const metadata = {
 	title: "IMS",
@@ -7,7 +8,7 @@ export const metadata = {
 
 export default function RootLayout({children}) {
 	return (
-		<html lang="en" className={`antialiased`}>
+		<html lang="en" className={`${figtree} ${gfs_didot} font-figtree antialiased`}>
 		<body>
 		<main>
 			{children}

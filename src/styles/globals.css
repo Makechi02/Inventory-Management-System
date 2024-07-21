@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .page-heading {
-    @apply font-extrabold text-2xl sm:text-3xl;
+    @apply font-gfs_didot font-extrabold text-2xl sm:text-3xl;
 }
 
 .add-btn {

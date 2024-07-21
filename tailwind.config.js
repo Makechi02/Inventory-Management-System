@@ -6,6 +6,10 @@ module.exports = {
     ],
     theme: {
         extend: {
+            fontFamily: {
+                figtree: ['var(--font-figtree), sans-serif'],
+                gfs_didot: ['var(--font-gfs_didot), serif']
+            }
         },
     },
     plugins: [],
