@@ -4,11 +4,13 @@ import Link from "next/link";
 import {FaChevronLeft} from "react-icons/fa";
 import {useEffect, useState} from "react";
 import CategoryService from "@/service/CategoryService";
+import {useRouter} from "next/navigation";
 
 const Page = ({params}) => {
     const [category, setCategory] = useState({});
     const [name, setName] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const router = useRouter();
 
     const handleEditCategory = (e) => {
         e.preventDefault();
@@ -27,6 +29,7 @@ const Page = ({params}) => {
             .then(response => {
                 if (response.status === 200) {
                     alert('Category updated successfully');
+                    router.back();
                 }
             });
     }
@@ -73,6 +76,7 @@ const Page = ({params}) => {
                                 type={`text`}
                                 id={`name`}
                                 value={name}
+                                enterkeyhint={`done`}
                                 onChange={event => setName(event.target.value)}
                                 className={`border-2 border-black w-full sm:max-w-md px-2 py-1 rounded-lg`}
                             />

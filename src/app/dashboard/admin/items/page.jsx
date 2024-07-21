@@ -5,9 +5,10 @@ import {FaTrashCan} from "react-icons/fa6";
 import Link from "next/link";
 import {useEffect, useState} from "react";
 import ItemService from "@/service/ItemService";
+import {ItemCard} from "@/components/ui/dashboard/admin/TableCards";
 
 const Page = () => {
-    const[items, setItems] = useState([]);
+    const [items, setItems] = useState([]);
 
     const handleDelete = (item) => {
         const choice = confirm("Are you sure you want to delete this item?");
@@ -19,6 +20,7 @@ const Page = () => {
             .then(response => {
                 if (response.status === 200) {
                     alert("Item deleted successfully");
+                    window.location.reload();
                 }
             })
             .catch(error => console.error(error));
@@ -46,52 +48,62 @@ const Page = () => {
                 {items.length === 0 ? (
                     <p className={`text-center`}>No Items found</p>
                 ) : (
-                    <div className={`overflow-x-auto`}>
-                        <table className={`min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden`}>
-                            <thead className={`bg-gray-300`}>
-                            <tr>
-                                <th className={`py-2`}>S/No</th>
-                                <th>Name</th>
-                                <th>Brand</th>
-                                <th>Model</th>
-                                <th>SKU</th>
-                                <th>Quantity</th>
-                                <th>Category</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
-
-                            <tbody>
-                            {items.map((item, index) => (
-                                <tr key={index}>
-                                    <td className={`text-center`}>{index + 1}</td>
-                                    <td className={`text-center`}>{item.name}</td>
-                                    <td className={`text-center`}>{item.brand}</td>
-                                    <td className={`text-center`}>{item.model}</td>
-                                    <td className={`text-center`}>{item.sku}</td>
-                                    <td className={`text-center`}>{item.quantity}</td>
-                                    <td className={`text-center capitalize`}>{item.category.name}</td>
-                                    <td className={`flex justify-center gap-2 py-2`}>
-                                        <Link
-                                            title={`Edit`}
-                                            className={`p-2 bg-[#333333] text-white rounded-lg`}
-                                            href={`/dashboard/admin/items/edit/${item._id}`}
-                                        >
-                                            <FaPen/>
-                                        </Link>
-                                        <button
-                                            title={`Delete`}
-                                            className={`bg-red-500 rounded-lg p-2 text-white`}
-                                            onClick={() => handleDelete(item)}
-                                        >
-                                            <FaTrashCan/>
-                                        </button>
-                                    </td>
+                    <>
+                        <div className={`overflow-x-auto`}>
+                            <table className={`min-w-full divide-y divide-gray-200 hidden sm:table`}>
+                                <thead className={`bg-gray-50`}>
+                                <tr>
+                                    <th scope={`col`} className={`table-heading`}>S/No</th>
+                                    <th scope={`col`} className={`table-heading`}>Name</th>
+                                    <th scope={`col`} className={`table-heading`}>Brand</th>
+                                    <th scope={`col`} className={`table-heading`}>Model</th>
+                                    <th scope={`col`} className={`table-heading`}>SKU</th>
+                                    <th scope={`col`} className={`table-heading`}>Quantity</th>
+                                    <th scope={`col`} className={`table-heading`}>Price</th>
+                                    <th scope={`col`} className={`table-heading`}>Category</th>
+                                    <th scope={`col`} className={`table-heading`}>Actions</th>
                                 </tr>
-                            ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+
+                                <tbody className={`bg-white divide-y divide-gray-200`}>
+                                {items.map((item, index) => (
+                                    <tr key={index}>
+                                        <td className={`table-data`}>{index + 1}</td>
+                                        <td className={`table-data`}>{item.name}</td>
+                                        <td className={`table-data`}>{item.brand}</td>
+                                        <td className={`table-data`}>{item.model}</td>
+                                        <td className={`table-data`}>{item.sku}</td>
+                                        <td className={`table-data`}>{item.quantity}</td>
+                                        <td className={`table-data`}>{item.price}</td>
+                                        <td className={`table-data`}>{item.category.name}</td>
+                                        <td className={`table-data flex`}>
+                                            <Link
+                                                title={`Edit`}
+                                                className={`edit-btn`}
+                                                href={`/dashboard/admin/items/edit/${item._id}`}
+                                            >
+                                                <FaPen/>
+                                            </Link>
+                                            <button
+                                                title={`Delete`}
+                                                className={`ml-3 delete-btn`}
+                                                onClick={() => handleDelete(item)}
+                                            >
+                                                <FaTrashCan/>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {items.map((item, index) => (
+                            <div key={index} className={`sm:hidden`}>
+                                <ItemCard item={item} handleDelete={handleDelete}/>
+                            </div>
+                        ))}
+                    </>
                 )}
             </div>
         </div>

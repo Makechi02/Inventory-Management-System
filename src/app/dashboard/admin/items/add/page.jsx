@@ -5,6 +5,7 @@ import {FaChevronLeft} from "react-icons/fa";
 import {useEffect, useState} from "react";
 import CategoryService from "@/service/CategoryService";
 import ItemService from "@/service/ItemService";
+import {useRouter} from "next/navigation";
 
 const Page = () => {
     const [name, setName] = useState("");
@@ -15,6 +16,8 @@ const Page = () => {
     const [category, setCategory] = useState();
     const [errorMessage, setErrorMessage] = useState('');
     const [categories, setCategories] = useState([]);
+
+    const router = useRouter();
 
     const handleAddItem = async (e) => {
         e.preventDefault();
@@ -56,6 +59,7 @@ const Page = () => {
 
             if (response.status === 201) {
                 alert("New Item added successfully");
+                router.back();
             }
         } catch (e) {
             console.error(e);
@@ -134,6 +138,7 @@ const Page = () => {
                                 id={`quantity`}
                                 value={quantity}
                                 onChange={event => setQuantity(event.target.value)}
+                                enterkeyhint={`next`}
                                 className={`border-2 border-black w-full sm:max-w-md px-2 py-1 rounded-lg`}
                             />
                         </div>

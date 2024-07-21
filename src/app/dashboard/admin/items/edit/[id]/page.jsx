@@ -5,6 +5,7 @@ import {FaChevronLeft} from "react-icons/fa";
 import {useEffect, useState} from "react";
 import CategoryService from "@/service/CategoryService";
 import ItemService from "@/service/ItemService";
+import {useRouter} from "next/navigation";
 
 const Page = ({params}) => {
     const [item, setItem] = useState({});
@@ -16,7 +17,8 @@ const Page = ({params}) => {
     const [price, setPrice] = useState(item.price);
     const [category, setCategory] = useState(item.category);
     const [errorMessage, setErrorMessage] = useState('');
-    const [categories, setCategories] = useState()
+    const [categories, setCategories] = useState();
+    const router = useRouter();
 
     const handleEditItem = async (e) => {
         e.preventDefault();
@@ -54,12 +56,11 @@ const Page = ({params}) => {
         try {
             const updatedItem = {...item, name, brand, model, quantity, price, category};
 
-            console.log(updatedItem)
-
             const response = await ItemService.updateItem(item._id, updatedItem);
 
             if (response.status === 200) {
                 alert("Item updated successfully");
+                router.back();
             }
         } catch (e) {
             console.error(e);

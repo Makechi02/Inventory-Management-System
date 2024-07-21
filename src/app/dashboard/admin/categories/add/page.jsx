@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import {FaChevronLeft} from "react-icons/fa";
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import CategoryService from "@/service/CategoryService";
+import {useRouter} from "next/navigation";
 
 const Page = () => {
     const [name, setName] = useState("");
     const [errorMessage, setErrorMessage] = useState('');
+    const router = useRouter();
 
     const handleAddCategory = async (e) => {
         e.preventDefault();
@@ -22,6 +24,7 @@ const Page = () => {
             const response = await CategoryService.addCategory(newCategory);
             if (response.status === 201) {
                 alert("New Category added successfully");
+                router.back();
             }
         } catch (e) {
             console.error(e);
@@ -56,6 +59,7 @@ const Page = () => {
                             type={`text`}
                             id={`name`}
                             value={name}
+                            enterkeyhint={`done`}
                             onChange={event => setName(event.target.value)}
                             className={`border-2 border-black w-full sm:max-w-md px-2 py-1 rounded-lg`}
                         />
