@@ -76,7 +76,7 @@ const Page = ({params}) => {
                                 type={`text`}
                                 id={`name`}
                                 value={name}
-                                enterkeyhint={`done`}
+                                enterKeyHint={`done`}
                                 onChange={event => setName(event.target.value)}
                                 className={`border-2 border-black w-full sm:max-w-md px-2 py-1 rounded-lg`}
                             />

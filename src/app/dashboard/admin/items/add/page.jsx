@@ -138,7 +138,7 @@ const Page = () => {
                                 id={`quantity`}
                                 value={quantity}
                                 onChange={event => setQuantity(event.target.value)}
-                                enterkeyhint={`next`}
+                                enterKeyHint={`next`}
                                 className={`border-2 border-black w-full sm:max-w-md px-2 py-1 rounded-lg`}
                             />
                         </div>
