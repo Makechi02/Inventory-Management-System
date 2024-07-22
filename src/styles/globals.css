@@ -29,3 +29,11 @@
 .table-data {
     @apply px-6 py-2 whitespace-nowrap;
 }
+
+.input {
+    @apply border border-gray-300 bg-transparent rounded-lg py-2 px-4 text-sm;
+}
+
+.label {
+    @apply text-sm;
+}

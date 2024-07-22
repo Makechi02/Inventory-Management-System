@@ -5,7 +5,7 @@ import {redirect} from "next/navigation";
 const Layout = async ({children}) => {
     const session = await getServerSession(authOptions);
 
-    if (session.user.role !== 'ADMIN') {
+    if (session.user.role !== 'USER') {
         redirect("/403");
     }
 

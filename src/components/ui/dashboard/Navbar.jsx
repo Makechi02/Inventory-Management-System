@@ -2,9 +2,9 @@
 
 import {FaBars} from "react-icons/fa";
 import {useState} from "react";
-import {MobileNavigation, PrimaryNavigation} from "@/components/ui/dashboard/admin/Navigation";
+import {MobileNavigation, PrimaryNavigation} from "@/components/ui/dashboard/Navigation";
 
-const Navbar = () => {
+const Navbar = ({role}) => {
     const [showNavbar, setShowNavbar] = useState(false);
     const toggleNavbar = () => {
         setShowNavbar(prevState => !prevState);
@@ -16,8 +16,8 @@ const Navbar = () => {
                 {!showNavbar && <button onClick={toggleNavbar}><FaBars/></button>}
             </div>
 
-            <PrimaryNavigation/>
-            <MobileNavigation showNavbar={showNavbar} toggleNavbar={toggleNavbar}/>
+            <PrimaryNavigation role={role}/>
+            <MobileNavigation showNavbar={showNavbar} toggleNavbar={toggleNavbar} role={role}/>
         </div>
     )
 }

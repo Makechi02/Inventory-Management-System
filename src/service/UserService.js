@@ -1,14 +1,21 @@
 import axios from "axios";
 
 const USERS_API_BASE_URL = "/api/users";
+const USERS_AUTH_API_BASE_URL = "/api/auth";
 
-const UserService = {
+export const UserAuthService = {
+    saveUser: (user) => {
+        return axios.post(`${USERS_AUTH_API_BASE_URL}/register`, user, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+    },
+}
+
+export const UserService = {
     getAllUsers: () => {
         return axios.get(USERS_API_BASE_URL);
-    },
-
-    addUser: (user) => {
-        return axios.post(USERS_API_BASE_URL, user);
     },
 
     getUserById: (id) => {
@@ -27,5 +34,3 @@ const UserService = {
         return axios.delete(`${USERS_API_BASE_URL}/${id}`);
     }
 };
-
-export default UserService;

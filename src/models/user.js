@@ -5,10 +5,10 @@ const UserSchema = new Schema({
         type: String,
         required: [true, 'Name is required']
     },
-    username: {
+    email: {
         type: String,
-        unique: true,
-        required: [true, 'Username is required']
+        required: [true, 'Email is required'],
+        unique: true
     },
     password: {
         type: String,
@@ -16,7 +16,16 @@ const UserSchema = new Schema({
     },
     role: {
         type: String,
-        required: [true, 'Role is required']
+        enum: ['ADMIN', 'USER'],
+        default: 'USER'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now()
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now()
     }
 });
 
