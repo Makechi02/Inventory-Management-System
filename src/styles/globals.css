@@ -7,7 +7,7 @@
 }
 
 .add-btn {
-    @apply bg-orange-600 px-4 py-2 rounded-lg text-white;
+    @apply bg-orange-600 hover:bg-orange-800 px-4 py-2 rounded-lg text-white;
 }
 
 .edit-btn {
@@ -36,4 +36,27 @@
 
 .label {
     @apply text-sm;
+}
+
+.dashboard-input {
+    @apply bg-gray-200 border-2 w-full md:max-w-md p-2 rounded-lg;
+}
+
+.dashboard-label {
+    @apply font-bold;
+}
+
+input[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }

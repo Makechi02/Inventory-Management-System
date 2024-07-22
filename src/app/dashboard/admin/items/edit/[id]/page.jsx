@@ -100,14 +100,14 @@ const Page = ({params}) => {
     }, [name]);
 
     return (
-        <>
+        <section className={`md:px-[10%]`}>
             <Link
                 href={`/dashboard/admin/items`}
                 className={`bg-black text-gray-100 p-2 rounded-lg flex items-center gap-2 w-fit`}
             >
-                <FaChevronLeft/>
-                Back
+                <FaChevronLeft/> Back
             </Link>
+
             <div className={`bg-white p-4 rounded-lg mt-4`}>
                 <h1 className={`page-heading`}>Edit item</h1>
 
@@ -119,74 +119,80 @@ const Page = ({params}) => {
                                 {errorMessage && errorMessage}
                             </p>
 
-                            <div className={`input-box`}>
-                                <label htmlFor={`name`}>Name:</label>
-                                <input
-                                    type={`text`}
-                                    id={`name`}
-                                    value={name}
-                                    onChange={event => setName(event.target.value)}
-                                    className={`border-2 border-black w-full sm:max-w-md px-2 py-1 rounded-lg`}
-                                />
-                            </div>
+                            <div className={`grid sm:grid-cols-2 gap-4`}>
+                                <div className={`input-box`}>
+                                    <label htmlFor={`name`} className={`dashboard-label`}>Name:</label>
+                                    <input
+                                        type={`text`}
+                                        id={`name`}
+                                        value={name}
+                                        autoComplete={`off`}
+                                        onChange={event => setName(event.target.value)}
+                                        className={`dashboard-input`}
+                                    />
+                                </div>
 
-                            <div className={`input-box`}>
-                                <label htmlFor={`brand`}>Brand:</label>
-                                <input
-                                    type={`text`}
-                                    id={`brand`}
-                                    value={brand}
-                                    onChange={event => setBrand(event.target.value)}
-                                    className={`border-2 border-black w-full sm:max-w-md px-2 py-1 rounded-lg`}
-                                />
-                            </div>
+                                <div className={`input-box`}>
+                                    <label htmlFor={`brand`} className={`dashboard-label`}>Brand:</label>
+                                    <input
+                                        type={`text`}
+                                        id={`brand`}
+                                        value={brand}
+                                        autoComplete={`off`}
+                                        onChange={event => setBrand(event.target.value)}
+                                        className={`dashboard-input`}
+                                    />
+                                </div>
 
-                            <div className={`input-box`}>
-                                <label htmlFor={`model`}>Model:</label>
-                                <input
-                                    type={`text`}
-                                    id={`model`}
-                                    value={model}
-                                    onChange={event => setModel(event.target.value)}
-                                    className={`border-2 border-black w-full sm:max-w-md px-2 py-1 rounded-lg`}
-                                />
-                            </div>
+                                <div className={`input-box`}>
+                                    <label htmlFor={`model`} className={`dashboard-label`}>Model:</label>
+                                    <input
+                                        type={`text`}
+                                        id={`model`}
+                                        value={model}
+                                        autoComplete={`off`}
+                                        onChange={event => setModel(event.target.value)}
+                                        className={`dashboard-input`}
+                                    />
+                                </div>
 
-                            <div className={`input-box`}>
-                                <label htmlFor={`quantity`}>Quantity:</label>
-                                <input
-                                    type={`number`}
-                                    id={`quantity`}
-                                    value={quantity}
-                                    onChange={event => setQuantity(event.target.value)}
-                                    className={`border-2 border-black w-full sm:max-w-md px-2 py-1 rounded-lg`}
-                                />
-                            </div>
+                                <div className={`input-box`}>
+                                    <label htmlFor={`quantity`} className={`dashboard-label`}>Quantity:</label>
+                                    <input
+                                        type={`number`}
+                                        id={`quantity`}
+                                        value={quantity}
+                                        onChange={event => setQuantity(event.target.value)}
+                                        enterKeyHint={`next`}
+                                        className={`dashboard-input`}
+                                    />
+                                </div>
 
-                            <div className={`input-box`}>
-                                <label htmlFor={`price`}>Price:</label>
-                                <input
-                                    type={`number`}
-                                    id={`price`}
-                                    value={price}
-                                    onChange={event => setPrice(event.target.value)}
-                                    className={`border-2 border-black w-full sm:max-w-md px-2 py-1 rounded-lg`}
-                                />
-                            </div>
+                                <div className={`input-box`}>
+                                    <label htmlFor={`price`} className={`dashboard-label`}>Price:</label>
+                                    <input
+                                        type={`number`}
+                                        id={`price`}
+                                        value={price}
+                                        onChange={event => setPrice(event.target.value)}
+                                        className={`dashboard-input`}
+                                    />
+                                </div>
 
-                            <div className={`input-box`}>
-                                <label htmlFor={`category`}>Category:</label>
-                                <select
-                                    id={`category`}
-                                    value={category?._id}
-                                    onChange={event => setCategory(event.target.value)}
-                                    className={`border-2 border-black w-full sm:max-w-md px-2 py-2 rounded-lg bg-transparent`}
-                                >
-                                    <option>-- select category --</option>
-                                    {categories?.map((cat) => (
-                                        <option key={cat._id} value={cat._id}>{cat.name}</option>
-                                    ))}
-                                </select>
+                                <div className={`input-box`}>
+                                    <label htmlFor={`category`} className={`dashboard-label`}>Category:</label>
+                                    <select
+                                        id={`category`}
+                                        className={`dashboard-input`}
+                                        value={category?._id}
+                                        onChange={event => setCategory(event.target.value)}
+                                    >
+                                        <option>-- select category --</option>
+                                        {categories?.map((category, index) => (
+                                            <option key={index} value={category._id}>{category.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
 
                             <button className={`add-btn w-fit mt-4`} type={`submit`}>Save</button>
@@ -196,7 +202,7 @@ const Page = ({params}) => {
                     )}
                 </div>
             </div>
-        </>
+        </section>
     )
 }
 

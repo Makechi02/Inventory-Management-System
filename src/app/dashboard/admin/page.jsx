@@ -1,7 +1,7 @@
 const Dashboard = () => {
     return (
-        <div>
-            <h1>Admin Dashboard</h1>
+        <div className={`bg-white py-4 p-4 rounded-lg`}>
+            <h1 className={`page-heading`}>Admin Dashboard</h1>
         </div>
     )
 }

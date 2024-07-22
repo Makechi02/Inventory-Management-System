@@ -5,7 +5,7 @@ import {FaTrashCan} from "react-icons/fa6";
 import Link from "next/link";
 import {useEffect, useState} from "react";
 import {UserCard} from "@/components/ui/dashboard/admin/TableCards";
-import UserService from "@/service/UserService";
+import {UserService} from "@/service/UserService";
 
 const Page = () => {
     const [users, setUsers] = useState([]);
@@ -57,8 +57,10 @@ const Page = () => {
                                 <tr>
                                     <th scope={`col`} className={`table-heading`}>S/No</th>
                                     <th scope={`col`} className={`table-heading`}>Name</th>
-                                    <th scope={`col`} className={`table-heading`}>Username</th>
+                                    <th scope={`col`} className={`table-heading`}>Email</th>
                                     <th scope={`col`} className={`table-heading`}>Role</th>
+                                    <th scope={`col`} className={`table-heading`}>Added at</th>
+                                    <th scope={`col`} className={`table-heading`}>Updated at</th>
                                     <th scope={`col`} className={`table-heading`}>Actions</th>
                                 </tr>
                                 </thead>
@@ -68,8 +70,10 @@ const Page = () => {
                                     <tr key={user._id}>
                                         <td className={`table-data`}>{index + 1}</td>
                                         <td className={`table-data`}>{user.name}</td>
-                                        <td className={`table-data`}>{user.username}</td>
+                                        <td className={`table-data`}>{user.email}</td>
                                         <td className={`table-data`}>{user.role}</td>
+                                        <td className={`table-data`}>{user.createdAt}</td>
+                                        <td className={`table-data`}>{user.updatedAt}</td>
                                         <td className={`table-data flex`}>
                                             <Link
                                                 title={`Edit`}

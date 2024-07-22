@@ -59,8 +59,10 @@ export const UserCard = ({user, handleDelete}) => {
     return (
         <div className={`bg-gray-100 shadow rounded-lg p-4 mt-3`}>
             <Card title={`name`} text={user.name} />
-            <Card title={`username`} text={user.username} />
+            <Card title={`email`} text={user.email} />
             <Card title={`role`} text={user.role} />
+            <Card title={`added at`} text={user.createdAt} />
+            <Card title={`updated at`} text={user.updatedAt} />
             <ActionsCard
                 href={`/dashboard/admin/users/edit/${user?._id}`}
                 handleDelete={() => handleDelete(user)}
