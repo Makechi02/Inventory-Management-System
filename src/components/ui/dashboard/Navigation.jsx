@@ -35,7 +35,7 @@ const AdminNavLinks = ({toggleNavbar}) => {
         { link: 'Items', href: '/dashboard/admin/items' },
         { link: 'Categories', href: '/dashboard/admin/categories' },
         { link: 'Users', href: '/dashboard/admin/users' },
-        { link: 'Profile', href: '/dashboard/admin/profile' },
+        // { link: 'Profile', href: '/dashboard/admin/profile' },
     ];
 
     const pathname = usePathname();

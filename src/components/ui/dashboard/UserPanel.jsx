@@ -31,10 +31,8 @@ const UserPanel = ({user}) => {
 }
 
 const ProfileDropdown = ({isDropdownVisible, toggleDropdown, user}) => {
-    const handleLogout = () => {
-        signOut({
-            callbackUrl: '/accounts/login'
-        }).then(r => console.log(r));
+    const handleLogout = async () => {
+        await signOut({callbackUrl: '/accounts/login'});
     }
 
     const firstLetter = user.name.split("")[0];
