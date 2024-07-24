@@ -73,8 +73,8 @@ const Page = () => {
                                         <td className={`table-data`}>{user.name}</td>
                                         <td className={`table-data`}>{user.email}</td>
                                         <td className={`table-data`}>{user.role}</td>
-                                        <td className={`table-data`}>{user.createdAt}</td>
-                                        <td className={`table-data`}>{user.updatedAt}</td>
+                                        <td className={`table-data`}>{DateUtil.formatDate(user.createdAt)}</td>
+                                        <td className={`table-data`}>{DateUtil.formatDate(user.updatedAt)}</td>
                                         <td className={`table-data flex`}>
                                             <Link
                                                 title={`Edit`}

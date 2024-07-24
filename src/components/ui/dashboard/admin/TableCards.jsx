@@ -3,6 +3,7 @@
 import Link from "next/link";
 import {FaPen} from "react-icons/fa";
 import {FaTrashCan} from "react-icons/fa6";
+import DateUtil from "@/utils/dateUtil";
 
 const Card = ({title, text}) => {
     return (
@@ -61,8 +62,8 @@ export const UserCard = ({user, handleDelete}) => {
             <Card title={`name`} text={user.name} />
             <Card title={`email`} text={user.email} />
             <Card title={`role`} text={user.role} />
-            <Card title={`added at`} text={user.createdAt} />
-            <Card title={`updated at`} text={user.updatedAt} />
+            <Card title={`added at`} text={DateUtil.formatDate(user.createdAt)} />
+            <Card title={`updated at`} text={DateUtil.formatDate(user.updatedAt)} />
             <ActionsCard
                 href={`/dashboard/admin/users/edit/${user?._id}`}
                 handleDelete={() => handleDelete(user)}
