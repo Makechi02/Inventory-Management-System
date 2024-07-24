@@ -21,12 +21,19 @@ const UserSchema = new Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     },
     updatedAt: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     }
+});
+
+UserSchema.pre('save', function (next) {
+    if (this.isModified()) {
+        this.updatedAt = Date.now();
+    }
+    next();
 });
 
 const User = models.User || model("User", UserSchema);

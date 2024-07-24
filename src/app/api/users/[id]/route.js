@@ -19,11 +19,15 @@ export const GET = async (request, { params }) => {
 export const PUT = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
-    const user = await request.json();
+    const {name, email, role} = await request.json();
 
     try {
         await connectToDB();
-        const response = await User.updateOne({ _id: params.id }, user);
+
+        const response = await User.updateOne(
+            { _id: params.id },
+            {$set: {name, email, role, updatedAt: Date.now()}}
+        );
         return new Response(JSON.stringify(response), { status: 200, headers });
     } catch (e) {
         return new Response("Failed to update user", { status: 500, headers });

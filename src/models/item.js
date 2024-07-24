@@ -29,6 +29,14 @@ const ItemSchema = new Schema({
     category: {
         type: Schema.Types.ObjectId,
         ref: 'Category'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
     }
 });
 
@@ -38,6 +46,13 @@ ItemSchema.pre('validate', async function(next) {
         if (category) {
             this.sku = SKUGenerator.generateSKU(this.name, category.name);
         }
+    }
+    next();
+});
+
+ItemSchema.pre('save', function (next) {
+    if (this.isModified()) {
+        this.updatedAt = Date.now();
     }
     next();
 });

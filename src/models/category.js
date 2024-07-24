@@ -5,8 +5,24 @@ const CategorySchema = new Schema({
         type: String,
         unique: [true, ""],
         required: [true, 'Name is required']
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
     }
 });
+
+CategorySchema.pre('save', function (next) {
+    if (this.isModified()) {
+        this.updatedAt = Date.now();
+    }
+    next();
+});
+
 
 const Category = models.Category || model('Category', CategorySchema);
 

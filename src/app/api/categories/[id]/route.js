@@ -1,22 +1,6 @@
-import { connectToDB } from "@/utils/database";
+import {connectToDB} from "@/utils/database";
 import Category from "@/models/category";
-
-const allowedOrigins = [
-    'https://inventory-management-system-7mrzg4o6i-makechi02s-projects.vercel.app',
-    'https://inventory-management-system-nu-umber.vercel.app'
-];
-
-const getCorsHeaders = (origin) => {
-    const headers = new Headers();
-    if (allowedOrigins.includes(origin)) {
-        headers.set('Access-Control-Allow-Origin', origin);
-    } else {
-        headers.set('Access-Control-Allow-Origin', 'null'); // You can set it to 'null' if the origin is not allowed
-    }
-    headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    return headers;
-};
+import {getCorsHeaders} from "@/app/api/options";
 
 export const GET = async (request, { params }) => {
     const origin = request.headers.get('origin');
@@ -35,10 +19,15 @@ export const GET = async (request, { params }) => {
 export const PUT = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
-    const category = await request.json();
+    const {name} = await request.json();
     try {
         await connectToDB();
-        const response = await Category.updateOne({ _id: params.id }, category);
+        const response = await Category.updateOne(
+            { _id: params.id },
+            {
+                $set: {name, updatedAt: Date.now()}
+            }
+        );
         return new Response(JSON.stringify(response), { status: 200, headers });
     } catch (e) {
         return new Response("Failed to update category", { status: 500, headers });
