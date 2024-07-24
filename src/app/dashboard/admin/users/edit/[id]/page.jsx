@@ -34,7 +34,7 @@ const Page = ({params}) => {
         }
 
         try {
-            const updatedUser = {...user, name, brand: email, role};
+            const updatedUser = {name, email, role};
 
             const response = await UserService.updateUser(user._id, updatedUser);
 
@@ -77,7 +77,7 @@ const Page = ({params}) => {
                 Back
             </Link>
 
-            <div className={`bg-white p-4 sm:p-8 rounded-lg mt-4`}>
+            <div className={`bg-white p-4 sm:p-8 rounded-lg mt-4 shadow-lg`}>
                 <h1 className={`page-heading`}>Edit User</h1>
 
                 <div className={`mt-4`}>

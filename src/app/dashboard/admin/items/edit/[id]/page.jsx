@@ -54,7 +54,7 @@ const Page = ({params}) => {
         }
 
         try {
-            const updatedItem = {...item, name, brand, model, quantity, price, category};
+            const updatedItem = {name, brand, model, quantity, price, category};
 
             const response = await ItemService.updateItem(item._id, updatedItem);
 
@@ -108,7 +108,7 @@ const Page = ({params}) => {
                 <FaChevronLeft/> Back
             </Link>
 
-            <div className={`bg-white p-4 rounded-lg mt-4`}>
+            <div className={`bg-white p-4 rounded-lg mt-4 shadow-lg`}>
                 <h1 className={`page-heading`}>Edit item</h1>
 
                 <div className={`mt-4`}>

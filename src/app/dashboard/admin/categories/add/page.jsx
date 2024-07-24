@@ -45,7 +45,7 @@ const Page = () => {
                 Back
             </Link>
 
-            <div className={`bg-white p-4 sm:p-8 rounded-lg mt-4`}>
+            <div className={`bg-white p-4 sm:p-8 rounded-lg mt-4 shadow-lg`}>
                 <h1 className={`page-heading`}>Add category</h1>
 
                 <div className={`mt-4`}>
@@ -58,6 +58,7 @@ const Page = () => {
                             id={`name`}
                             value={name}
                             enterKeyHint={`done`}
+                            autoComplete={`off`}
                             className={`dashboard-input`}
                             onChange={event => setName(event.target.value)}
                         />

@@ -13,7 +13,7 @@ const Layout = async ({children}) => {
     return (
         <div className={`min-h-screen bg-gray-200`}>
             <TopBar user={session.user}/>
-            <div className={`py-4 px-4 sm:px-8`}>
+            <div className={`container mx-auto p-6`}>
                 {children}
             </div>
         </div>

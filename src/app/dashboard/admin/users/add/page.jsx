@@ -59,7 +59,7 @@ const Page = () => {
                 Back
             </Link>
 
-            <div className={`bg-white p-4 sm:p-8 rounded-lg mt-4`}>
+            <div className={`bg-white p-4 sm:p-8 rounded-lg mt-4 shadow-lg`}>
                 <h1 className={`page-heading`}>Add user</h1>
 
                 <div className={`mt-4`}>

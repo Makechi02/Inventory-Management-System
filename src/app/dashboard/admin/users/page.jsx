@@ -6,6 +6,7 @@ import Link from "next/link";
 import {useEffect, useState} from "react";
 import {UserCard} from "@/components/ui/dashboard/admin/TableCards";
 import {UserService} from "@/service/UserService";
+import DateUtil from "@/utils/dateUtil";
 
 const Page = () => {
     const [users, setUsers] = useState([]);
@@ -37,7 +38,7 @@ const Page = () => {
     }, []);
 
     return (
-        <div className={`bg-white py-4 p-4 rounded-lg`}>
+        <div className={`bg-white py-4 p-4 rounded-lg shadow-lg`}>
             <h1 className={`page-heading`}>Users</h1>
 
             <div className={`mt-4 flex w-full justify-end`}>

@@ -37,7 +37,7 @@ const Page = () => {
     }, []);
 
     return (
-        <div className={`bg-white p-4 rounded-lg`}>
+        <div className={`bg-white p-4 rounded-lg shadow-lg`}>
             <h1 className={`page-heading`}>Items</h1>
 
             <div className={`mt-4 flex w-full justify-end`}>
