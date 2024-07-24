@@ -17,7 +17,7 @@ export const authOptions = {
 
                 const user = await User.findOne({email: credentials.email});
                 if (!user) {
-                    throw new Error("No user found with this email found");
+                    throw new Error("No user found with this email");
                 }
 
                 const isValidPassword = bcrypt.compareSync(credentials.password, user.password);
