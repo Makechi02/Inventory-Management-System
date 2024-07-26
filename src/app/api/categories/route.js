@@ -1,4 +1,4 @@
-import { connectToDB } from "@/utils/database";
+import {connectToDB} from "@/utils/database";
 import Category from "@/models/category";
 import {getCorsHeaders} from "@/app/api/options";
 
@@ -6,9 +6,16 @@ export const GET = async (request) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
 
+    const { searchParams } = new URL(request.url);
+    const query = searchParams.get("query") || "";
+
     try {
         await connectToDB();
-        const categories = await Category.find();
+        const categories = await Category.find({
+            $or: [
+                { name: new RegExp(query, "i") }
+            ]
+        });
         return new Response(JSON.stringify(categories), { headers });
     } catch (e) {
         console.log(e);

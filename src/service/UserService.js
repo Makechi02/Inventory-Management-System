@@ -14,8 +14,9 @@ export const UserAuthService = {
 }
 
 export const UserService = {
-    getAllUsers: () => {
-        return axios.get(USERS_API_BASE_URL);
+    getAllUsers: (params) => {
+        const queryString = params?.query ? `?query=${params.query}` : '';
+        return axios.get(`${USERS_API_BASE_URL}/${queryString}`);
     },
 
     getUserById: (id) => {

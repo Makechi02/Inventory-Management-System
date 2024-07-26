@@ -6,9 +6,19 @@ export const GET = async (request) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
 
+    const { searchParams } = new URL(request.url);
+    const query = searchParams.get("query") || "";
+
     try {
         await connectToDB();
-        const items = await Item.find().populate('category');
+        const items = await Item.find({
+            $or: [
+                { name: new RegExp(query, "i") },
+                { brand: new RegExp(query, "i") },
+                { model: new RegExp(query, "i") },
+                { sku: new RegExp(query, "i") }
+            ]
+        }).populate('category');
         return new Response(JSON.stringify(items), {headers});
     } catch (e) {
         return new Response("Failed to fetch all items", {status: 500, headers});

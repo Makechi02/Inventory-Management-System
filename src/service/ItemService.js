@@ -3,8 +3,9 @@ import axios from "axios";
 const ITEMS_API_BASE_URL = "/api/items";
 
 const ItemService = {
-    getAllItems: () => {
-        return axios.get(ITEMS_API_BASE_URL);
+    getAllItems: (params) => {
+        const queryString = params?.query ? `?query=${params.query}` : '';
+        return axios.get(`${ITEMS_API_BASE_URL}/${queryString}`);
     },
 
     addItem: (item) => {

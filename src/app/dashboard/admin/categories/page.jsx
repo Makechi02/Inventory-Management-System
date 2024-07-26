@@ -6,9 +6,13 @@ import Link from "next/link";
 import {useEffect, useState} from "react";
 import CategoryService from "@/service/CategoryService";
 import {CategoryCard} from "@/components/ui/dashboard/admin/TableCards";
+import SearchForm from "@/components/ui/dashboard/admin/SearchForm";
+import {useSearchParams} from "next/navigation";
 
 const Page = () => {
     const [categories, setCategories] = useState([]);
+    const searchParams = useSearchParams();
+    const query = searchParams.get("query");
 
     const handleDelete = (category) => {
         const choice = confirm(`Are you sure you want to delete ${category.name} category?`);
@@ -28,13 +32,13 @@ const Page = () => {
 
     useEffect(() => {
         const fetchCategories = () => {
-            CategoryService.getAllCategories()
+            CategoryService.getAllCategories({query})
                 .then(response => setCategories(response.data))
                 .catch(error => console.error(error));
         };
 
         fetchCategories();
-    }, []);
+    }, [query]);
 
     return (
         <div className={`bg-white py-4 p-4 rounded-lg shadow-lg`}>
@@ -45,6 +49,10 @@ const Page = () => {
             </div>
 
             <div className={`mt-4`}>
+                <SearchForm/>
+            </div>
+
+            <div className={`mt-8`}>
                 {categories.length === 0 ? (
                     <div>
                         <p className={`text-center`}>No categories found</p>

@@ -7,9 +7,13 @@ import {useEffect, useState} from "react";
 import {UserCard} from "@/components/ui/dashboard/admin/TableCards";
 import {UserService} from "@/service/UserService";
 import DateUtil from "@/utils/dateUtil";
+import SearchForm from "@/components/ui/dashboard/admin/SearchForm";
+import {useSearchParams} from "next/navigation";
 
 const Page = () => {
     const [users, setUsers] = useState([]);
+    const searchParams = useSearchParams();
+    const query = searchParams.get("query");
 
     const handleDelete = (user) => {
         const choice = confirm(`Are you sure you want to delete user ${user.name}?`);
@@ -29,13 +33,13 @@ const Page = () => {
 
     useEffect(() => {
         const fetchUsers = () => {
-            UserService.getAllUsers()
+            UserService.getAllUsers({query})
                 .then(response => setUsers(response.data))
                 .catch(error => console.error(error));
         };
 
         fetchUsers();
-    }, []);
+    }, [query]);
 
     return (
         <div className={`bg-white py-4 p-4 rounded-lg shadow-lg`}>
@@ -46,6 +50,10 @@ const Page = () => {
             </div>
 
             <div className={`mt-4`}>
+                <SearchForm/>
+            </div>
+
+            <div className={`mt-8`}>
                 {users.length === 0 ? (
                     <div>
                         <p className={`text-center`}>No users found</p>

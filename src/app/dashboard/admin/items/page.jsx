@@ -4,16 +4,20 @@ import {FaPen} from "react-icons/fa";
 import {FaTrashCan} from "react-icons/fa6";
 import Link from "next/link";
 import {useEffect, useState} from "react";
+import {useSearchParams} from "next/navigation";
 import ItemService from "@/service/ItemService";
 import {ItemCard} from "@/components/ui/dashboard/admin/TableCards";
+import SearchForm from "@/components/ui/dashboard/admin/SearchForm";
 
 const Page = () => {
     const [items, setItems] = useState([]);
+    const searchParams = useSearchParams();
+    const query = searchParams.get("query");
 
     const handleDelete = (item) => {
         const choice = confirm("Are you sure you want to delete this item?");
         if (choice) deleteItem(item);
-    }
+    };
 
     const deleteItem = (item) => {
         ItemService.deleteItem(item._id)
@@ -24,17 +28,17 @@ const Page = () => {
                 }
             })
             .catch(error => console.error(error));
-    }
+    };
 
     useEffect(() => {
         const fetchAllItems = () => {
-            ItemService.getAllItems()
+            ItemService.getAllItems({ query })
                 .then(response => setItems(response.data))
                 .catch(error => console.error(error));
         };
 
         fetchAllItems();
-    }, []);
+    }, [query]);
 
     return (
         <div className={`bg-white p-4 rounded-lg shadow-lg`}>
@@ -45,6 +49,10 @@ const Page = () => {
             </div>
 
             <div className={`mt-4`}>
+                <SearchForm />
+            </div>
+
+            <div className={`mt-8`}>
                 {items.length === 0 ? (
                     <p className={`text-center`}>No Items found</p>
                 ) : (
@@ -107,7 +115,7 @@ const Page = () => {
                 )}
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Page;
