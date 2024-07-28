@@ -4,8 +4,19 @@ const ITEMS_API_BASE_URL = "/api/items";
 
 const ItemService = {
     getAllItems: (params) => {
-        const queryString = params?.query ? `?query=${params.query}` : '';
-        return axios.get(`${ITEMS_API_BASE_URL}/${queryString}`);
+        const query = params.query;
+        const category = params.category;
+        const minPrice = params.minPrice;
+        const maxPrice = params.maxPrice;
+
+        const queryString = new URLSearchParams();
+
+        if (query) queryString.append('query', query);
+        if (category) queryString.append('category', category);
+        if (minPrice) queryString.append('minPrice', minPrice);
+        if (maxPrice) queryString.append('maxPrice', maxPrice);
+
+        return axios.get(`${ITEMS_API_BASE_URL}?${queryString.toString()}`);
     },
 
     addItem: (item) => {
