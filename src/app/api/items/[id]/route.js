@@ -9,7 +9,11 @@ export const GET = async (request, { params }) => {
 
     try {
         await connectToDB();
-        const item = await Item.find({ _id: itemId }).populate('category');
+        const item = await Item
+            .find({ _id: itemId })
+            .populate('category', 'name')
+            .populate('createdBy', 'name')
+            .populate('updatedBy', 'name');
         return new Response(JSON.stringify(item), { headers });
     } catch (e) {
         return new Response(`Item with id ${itemId} not found`, { status: 404, headers });
@@ -19,13 +23,13 @@ export const GET = async (request, { params }) => {
 export const PUT = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
-    const {name, brand, model, quantity, price, category} = await request.json();
+    const {name, brand, model, quantity, price, category, updatedBy} = await request.json();
 
     try {
         await connectToDB();
         const response = await Item.updateOne(
             { _id: params.id },
-            {$set: {name, brand, model, quantity, price, category, updatedAt: Date.now()}}
+            {$set: {name, brand, model, quantity, price, category, updatedBy, updatedAt: Date.now()}}
         );
         return new Response(JSON.stringify(response), { status: 200, headers });
     } catch (e) {

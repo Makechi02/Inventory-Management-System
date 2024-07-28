@@ -30,6 +30,15 @@ const ItemSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Category'
     },
+    createdBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    updatedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     createdAt: {
         type: Date,
         default: Date.now
