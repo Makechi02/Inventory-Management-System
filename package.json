@@ -20,7 +20,7 @@
         "react-chartjs-2": "^5.2.0",
         "react-dom": "^18",
         "react-icons": "^4.11.0",
-        "react-toastify": "^10.0.5"
+        "sweetalert2": "^11.12.3"
     },
     "devDependencies": {
         "autoprefixer": "^10.0.1",

@@ -4,6 +4,7 @@ import ItemService from "@/service/ItemService";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import CategoryService from "@/service/CategoryService";
+import Swal from "sweetalert2";
 
 const EditItemForm = ({itemID, userID}) => {
     const [item, setItem] = useState({});
@@ -88,8 +89,8 @@ const EditItemForm = ({itemID, userID}) => {
             const response = await ItemService.updateItem(item._id, updatedItem);
 
             if (response.status === 200) {
-                alert("Item updated successfully");
-                router.back();
+                Swal.fire("Item updated successfully", "", "success")
+                    .then(() => router.back());
             }
         } catch (e) {
             console.error(e);

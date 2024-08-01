@@ -1,26 +1,33 @@
 "use client"
 
 import Link from "next/link";
-import {FaChevronLeft, FaPen} from "react-icons/fa";
+import {FaPen} from "react-icons/fa";
 import {useEffect, useState} from "react";
 import ItemService from "@/service/ItemService";
 import DateUtil from "@/utils/dateUtil";
 import {FaTrashCan} from "react-icons/fa6";
+import Swal from "sweetalert2";
+import BackBtn from "@/components/ui/dashboard/BackBtn";
 
 const Page = ({params}) => {
     const [item, setItem] = useState({});
 
     const handleDelete = (item) => {
-        const choice = confirm("Are you sure you want to delete this item?");
-        if (choice) deleteItem(item);
+        Swal.fire({
+            title: "Are you sure you want to delete this item?",
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+        }).then((result) => {
+            if (result.isConfirmed) deleteItem(item);
+        });
     };
 
     const deleteItem = (item) => {
         ItemService.deleteItem(item._id)
             .then(response => {
                 if (response.status === 200) {
-                    alert("Item deleted successfully");
-                    window.location.reload();
+                    Swal.fire("Item deleted successfully", "", "success")
+                        .then(() => window.location.reload());
                 }
             })
             .catch(error => console.error(error));
@@ -41,12 +48,7 @@ const Page = ({params}) => {
 
     return (
         <section className={`md:px-[10%]`}>
-            <Link
-                href={`/dashboard/admin/items`}
-                className={`bg-black text-gray-100 p-2 rounded-lg flex items-center gap-2 w-fit`}
-            >
-                <FaChevronLeft/> Back
-            </Link>
+            <BackBtn/>
 
             <div className={`bg-white p-4 rounded-lg mt-4 shadow-lg`}>
                 <h1 className={`page-heading`}>Item Preview</h1>
@@ -112,7 +114,7 @@ const Page = ({params}) => {
                                 <div className={`input-box`}>
                                     <label htmlFor={`category`} className={`dashboard-label`}>Category:</label>
                                     <div className={`dashboard-input`}>
-                                        <p>{item.category.name}</p>
+                                        <p>{item.category?.name ? item.category.name : 'unknown'}</p>
                                     </div>
                                 </div>
 
