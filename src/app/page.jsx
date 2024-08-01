@@ -1,6 +1,16 @@
 import Link from "next/link";
+import {Benefits, Hero} from "@/components/ui/preview";
 
 const Home = () => {
+    return (
+        <div>
+            <Hero/>
+            <Benefits/>
+        </div>
+    )
+}
+
+const HomePage = () => {
     return (
         <div className={`bg-gray-200 h-screen flex flex-col gap-4 items-center justify-center py-10 px-4`}>
             <h1 className={`font-extrabold text-4xl tracking-wide text-center`}>Inventory Management System</h1>

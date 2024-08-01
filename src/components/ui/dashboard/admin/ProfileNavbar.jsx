@@ -2,12 +2,17 @@
 
 import Link from "next/link";
 import {usePathname} from "next/navigation";
+import {signOut} from "next-auth/react";
 
 const ProfileNavbar = () => {
     const profileNavLinks = [
         {href: "/dashboard/admin/profile", text: "personal information"},
         {href: "/dashboard/admin/profile/security", text: "security"}
-    ]
+    ];
+
+    const handleLogout = async () => {
+        await signOut({callbackUrl: '/accounts/login'});
+    }
 
     const pathname = usePathname();
 
@@ -23,7 +28,7 @@ const ProfileNavbar = () => {
                 )
             })}
             <li>
-                <button>Logout</button>
+                <button onClick={handleLogout}>Logout</button>
             </li>
         </ul>
     )
