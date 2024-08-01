@@ -8,6 +8,7 @@ import DateUtil from "@/utils/dateUtil";
 import {FaTrashCan} from "react-icons/fa6";
 import Swal from "sweetalert2";
 import BackBtn from "@/components/ui/dashboard/BackBtn";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 const Page = ({params}) => {
     const [item, setItem] = useState({});
@@ -37,7 +38,6 @@ const Page = ({params}) => {
         const fetchItemByID = () => {
             ItemService.getItemById(params.id)
                 .then(response => {
-                    console.log(response.data);
                     setItem(response.data[0]);
                 })
                 .catch(error => console.error(error));
@@ -77,70 +77,77 @@ const Page = ({params}) => {
                         <div className={`flex flex-col gap-3`}>
                             <div className={`grid sm:grid-cols-2 gap-4`}>
                                 <div className={`input-box`}>
-                                    <label htmlFor={`name`} className={`dashboard-label`}>Name:</label>
+                                    <p className={`dashboard-label`}>Name:</p>
                                     <div className={`dashboard-input`}>
                                         <p>{item.name}</p>
                                     </div>
                                 </div>
 
                                 <div className={`input-box`}>
-                                    <label htmlFor={`brand`} className={`dashboard-label`}>Brand:</label>
+                                    <p className={`dashboard-label`}>Brand:</p>
                                     <div className={`dashboard-input`}>
                                         <p>{item.brand}</p>
                                     </div>
                                 </div>
 
                                 <div className={`input-box`}>
-                                    <label htmlFor={`model`} className={`dashboard-label`}>Model:</label>
+                                    <p className={`dashboard-label`}>Model:</p>
                                     <div className={`dashboard-input`}>
                                         <p>{item.model}</p>
                                     </div>
                                 </div>
 
                                 <div className={`input-box`}>
-                                    <label htmlFor={`quantity`} className={`dashboard-label`}>Quantity:</label>
+                                    <p className={`dashboard-label`}>Quantity:</p>
                                     <div className={`dashboard-input`}>
                                         <p>{item.quantity}</p>
                                     </div>
                                 </div>
 
                                 <div className={`input-box`}>
-                                    <label htmlFor={`price`} className={`dashboard-label`}>Price:</label>
+                                    <p className={`dashboard-label`}>Price:</p>
                                     <div className={`dashboard-input`}>
                                         <p>{item.price}</p>
                                     </div>
                                 </div>
 
                                 <div className={`input-box`}>
-                                    <label htmlFor={`category`} className={`dashboard-label`}>Category:</label>
+                                    <p className={`dashboard-label`}>Category:</p>
                                     <div className={`dashboard-input`}>
                                         <p>{item.category?.name ? item.category.name : 'unknown'}</p>
                                     </div>
                                 </div>
 
                                 <div className={`input-box`}>
-                                    <label htmlFor={`category`} className={`dashboard-label`}>Created At:</label>
+                                    <p className={`dashboard-label`}>Supplier:</p>
+                                    <div className={`dashboard-input`}>
+                                        <p>{item.supplier?.name ? item.supplier.name : 'unknown'}</p>
+                                    </div>
+                                </div>
+
+                                <div className={`input-box`}>
+                                    <p className={`dashboard-label`}>Created At:</p>
                                     <div className={`dashboard-input`}>
                                         <p>{DateUtil.formatDate(item.createdAt)}</p>
                                     </div>
                                 </div>
 
                                 <div className={`input-box`}>
-                                    <label htmlFor={`category`} className={`dashboard-label`}>Created By:</label>
+                                    <p className={`dashboard-label`}>Created By:</p>
                                     <div className={`dashboard-input`}>
                                         <p>{item.createdBy.name}</p>
                                     </div>
                                 </div>
 
                                 <div className={`input-box`}>
-                                    <label htmlFor={`category`} className={`dashboard-label`}>Updated At:</label>
+                                    <p className={`dashboard-label`}>Updated At:</p>
                                     <div className={`dashboard-input`}>
                                         <p>{DateUtil.formatDate(item.updatedAt)}</p>
                                     </div>
                                 </div>
 
                                 <div className={`input-box`}>
-                                    <label htmlFor={`category`} className={`dashboard-label`}>Updated By:</label>
+                                    <p className={`dashboard-label`}>Updated By:</p>
                                     <div className={`dashboard-input`}>
                                         <p>{item.updatedBy.name}</p>
                                     </div>
@@ -149,7 +156,7 @@ const Page = ({params}) => {
                             </div>
                         </div>
                     ) : (
-                        <p>Loading...</p>
+                        <LoadingSpinner/>
                     )}
                 </div>
             </div>

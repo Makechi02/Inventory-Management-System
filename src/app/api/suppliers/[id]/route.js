@@ -1,40 +1,36 @@
 import {connectToDB} from "@/utils/database";
-import Item from "@/models/item";
 import {getCorsHeaders} from "@/app/api/options";
+import Supplier from "@/models/supplier";
 
 export const GET = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
-    const itemId = params.id;
+    const supplierID = params.id;
 
     try {
         await connectToDB();
-        const item = await Item
-            .find({ _id: itemId })
-            .populate('category', 'name')
-            .populate('supplier', 'name')
-            .populate('createdBy', 'name')
-            .populate('updatedBy', 'name');
-        return new Response(JSON.stringify(item), { headers });
+        const supplier = await Supplier.find({ _id: supplierID });
+        return new Response(JSON.stringify(supplier), { headers });
     } catch (e) {
-        return new Response(`Item with id ${itemId} not found`, { status: 404, headers });
+        return new Response("Supplier with id not found", { status: 500, headers });
     }
 };
 
 export const PUT = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
-    const {name, brand, model, quantity, price, supplier, category, updatedBy} = await request.json();
-
+    const {name, phone, address, updatedBy} = await request.json();
     try {
         await connectToDB();
-        const response = await Item.updateOne(
+        const response = await Supplier.updateOne(
             { _id: params.id },
-            {$set: {name, brand, model, quantity, price, supplier, category, updatedBy, updatedAt: Date.now()}}
+            {
+                $set: {name, phone, address, updatedBy, updatedAt: Date.now()}
+            }
         );
         return new Response(JSON.stringify(response), { status: 200, headers });
     } catch (e) {
-        return new Response("Failed to update item", { status: 500, headers });
+        return new Response("Failed to update supplier", { status: 500, headers });
     }
 };
 
@@ -43,10 +39,10 @@ export const DELETE = async (request, { params }) => {
     const headers = getCorsHeaders(origin);
     try {
         await connectToDB();
-        await Item.deleteOne({ _id: params.id });
+        await Supplier.deleteOne({ _id: params.id });
         return new Response("Success", { status: 200, headers });
     } catch (e) {
-        return new Response("Failed to delete item", { status: 500, headers });
+        return new Response("Failed to delete supplier", { status: 500, headers });
     }
 };
 

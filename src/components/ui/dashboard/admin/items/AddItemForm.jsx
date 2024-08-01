@@ -5,6 +5,7 @@ import {useRouter} from "next/navigation";
 import ItemService from "@/service/ItemService";
 import CategoryService from "@/service/CategoryService";
 import Swal from "sweetalert2";
+import SupplierService from "@/service/SupplierService";
 
 const AddItemForm = ({userID}) => {
     const [name, setName] = useState("");
@@ -13,8 +14,10 @@ const AddItemForm = ({userID}) => {
     const [quantity, setQuantity] = useState(0)
     const [price, setPrice] = useState(0);
     const [category, setCategory] = useState();
+    const [supplier, setSupplier] = useState();
     const [errorMessage, setErrorMessage] = useState('');
     const [categories, setCategories] = useState([]);
+    const [suppliers, setSuppliers] = useState();
 
     const router = useRouter();
 
@@ -51,8 +54,13 @@ const AddItemForm = ({userID}) => {
             return;
         }
 
+        if (!supplier || supplier === "-- select supplier --") {
+            setErrorMessage("Please choose a supplier");
+            return;
+        }
+
         try {
-            const newItem = {name, brand, model, quantity, price, category, createdBy: userID, updatedBy: userID};
+            const newItem = {name, brand, model, quantity, price, category, supplier, createdBy: userID, updatedBy: userID};
 
             const response = await ItemService.addItem(newItem);
 
@@ -68,15 +76,23 @@ const AddItemForm = ({userID}) => {
     useEffect(() => {
         const fetchAllCategories = () => {
             CategoryService.getAllCategories()
-                .then(response => setCategories(response.data));
+                .then(response => setCategories(response.data))
+                .catch(error => console.error(error));
         };
 
+        const fetchAllSuppliers = () => {
+            SupplierService.getAllSuppliers()
+                .then(response => setSuppliers(response.data))
+                .catch(error => console.error(error));
+        }
+
         fetchAllCategories();
+        fetchAllSuppliers();
     }, []);
 
     useEffect(() => {
         setErrorMessage("");
-    }, [name, brand, model, quantity, price, category]);
+    }, [name, brand, model, quantity, price, category, supplier]);
 
     return (
         <form className={`flex flex-col gap-4`} onSubmit={handleAddItem}>
@@ -152,6 +168,21 @@ const AddItemForm = ({userID}) => {
                         <option>-- select category --</option>
                         {categories.map((category, index) => (
                             <option key={index} value={category._id}>{category.name}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className={`input-box`}>
+                    <label htmlFor={`supplier`} className={`dashboard-label`}>Supplier:</label>
+                    <select
+                        id={`supplier`}
+                        className={`dashboard-input`}
+                        value={supplier?._id}
+                        onChange={event => setSupplier(event.target.value)}
+                    >
+                        <option>-- select supplier --</option>
+                        {suppliers?.map((supplier, index) => (
+                            <option key={index} value={supplier._id}>{supplier.name}</option>
                         ))}
                     </select>
                 </div>

@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import CategoryService from "@/service/CategoryService";
 import Swal from "sweetalert2";
+import SupplierService from "@/service/SupplierService";
 
 const EditItemForm = ({itemID, userID}) => {
     const [item, setItem] = useState({});
@@ -14,8 +15,10 @@ const EditItemForm = ({itemID, userID}) => {
     const [quantity, setQuantity] = useState(item.quantity)
     const [price, setPrice] = useState(item.price);
     const [category, setCategory] = useState(item.category);
+    const [supplier, setSupplier] = useState(item.supplier);
     const [errorMessage, setErrorMessage] = useState('');
     const [categories, setCategories] = useState();
+    const [suppliers, setSuppliers] = useState();
     const router = useRouter();
 
     useEffect(() => {
@@ -25,11 +28,18 @@ const EditItemForm = ({itemID, userID}) => {
                 .catch(error => console.error(error));
         };
 
+        const fetchAllSuppliers = () => {
+            SupplierService.getAllSuppliers()
+                .then(response => setSuppliers(response.data))
+                .catch(error => console.error(error));
+        }
+
         const fetchItemByID = () => {
             ItemService.getItemById(itemID)
                 .then(response => {
                     setItem(response.data[0]);
                     fetchAllCategories();
+                    fetchAllSuppliers();
                 })
                 .catch(error => console.error(error));
         }
@@ -44,11 +54,12 @@ const EditItemForm = ({itemID, userID}) => {
         setQuantity(item.quantity);
         setPrice(item.price);
         setCategory(item.category);
+        setSupplier(item.supplier);
     }, [item]);
 
     useEffect(() => {
         setErrorMessage("");
-    }, [name]);
+    }, [name, brand, model, quantity, price, category, supplier]);
 
     const handleEditItem = async (e) => {
         e.preventDefault();
@@ -83,8 +94,13 @@ const EditItemForm = ({itemID, userID}) => {
             return;
         }
 
+        if (!supplier || supplier === "-- select supplier --") {
+            setErrorMessage("Please choose a supplier");
+            return;
+        }
+
         try {
-            const updatedItem = {name, brand, model, quantity, price, category, updatedBy: userID};
+            const updatedItem = {name, brand, model, quantity, price, category, supplier, updatedBy: userID};
 
             const response = await ItemService.updateItem(item._id, updatedItem);
 
@@ -174,6 +190,21 @@ const EditItemForm = ({itemID, userID}) => {
                         <option>-- select category --</option>
                         {categories?.map((category, index) => (
                             <option key={index} value={category._id}>{category.name}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className={`input-box`}>
+                    <label htmlFor={`supplier`} className={`dashboard-label`}>Supplier:</label>
+                    <select
+                        id={`supplier`}
+                        className={`dashboard-input`}
+                        value={supplier?._id}
+                        onChange={event => setSupplier(event.target.value)}
+                    >
+                        <option>-- select supplier --</option>
+                        {suppliers?.map((supplier, index) => (
+                            <option key={index} value={supplier._id}>{supplier.name}</option>
                         ))}
                     </select>
                 </div>

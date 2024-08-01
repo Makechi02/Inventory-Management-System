@@ -30,6 +30,10 @@ const ItemSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Category'
     },
+    supplier: {
+        type: Schema.Types.ObjectId,
+        ref: 'Supplier'
+    },
     createdBy: {
         type: Schema.Types.ObjectId,
         ref: 'User',

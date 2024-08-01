@@ -45,7 +45,8 @@ export const GET = async (request) => {
         const items = await Item.find(searchFilter)
             .skip(skip)
             .limit(limit)
-            .populate('category')
+            .populate('category', 'name')
+            .populate('supplier', 'name')
             .populate('createdBy', 'name')
             .populate('updatedBy', 'name');
 

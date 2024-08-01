@@ -75,3 +75,19 @@ export const UserCard = ({user, handleDelete}) => {
         </div>
     )
 }
+
+export const SupplierCard = ({supplier, handleDelete}) => {
+    return (
+        <div className={`bg-gray-100 shadow rounded-lg p-4 mt-3`}>
+            <Card title={`name`} text={supplier.name}/>
+            <Card title={`added by`} text={supplier.addedBy.name}/>
+            <Card title={`added at`} text={DateUtil.formatDate(supplier.addedAt)}/>
+            <Card title={`updated by`} text={supplier?.updatedBy?.name}/>
+            <Card title={`updated at`} text={DateUtil.formatDate(supplier.updatedAt)}/>
+            <ActionsCard
+                href={`/dashboard/admin/suppliers/edit/${supplier._id}`}
+                handleDelete={() => handleDelete(supplier)}
+            />
+        </div>
+    )
+}
