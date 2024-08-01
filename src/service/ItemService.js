@@ -8,6 +8,8 @@ const ItemService = {
         const category = params.category;
         const minPrice = params.minPrice;
         const maxPrice = params.maxPrice;
+        const page = params.page || 1;
+        const limit = params.limit || 10;
 
         const queryString = new URLSearchParams();
 
@@ -15,6 +17,8 @@ const ItemService = {
         if (category) queryString.append('category', category);
         if (minPrice) queryString.append('minPrice', minPrice);
         if (maxPrice) queryString.append('maxPrice', maxPrice);
+        if (page) queryString.append('page', page);
+        if (limit) queryString.append('limit', limit);
 
         return axios.get(`${ITEMS_API_BASE_URL}?${queryString.toString()}`);
     },

@@ -11,6 +11,8 @@ export const GET = async (request) => {
     const category = searchParams.get("category") || "";
     const minPrice = parseFloat(searchParams.get("minPrice")) || 0;
     const maxPrice = parseFloat(searchParams.get("maxPrice")) || Infinity;
+    const page = parseInt(searchParams.get("page")) || 1;
+    const limit = parseInt(searchParams.get("limit")) || 10;
 
     try {
         await connectToDB();
@@ -38,14 +40,33 @@ export const GET = async (request) => {
             searchFilter.$and.push({ category });
         }
 
+        const skip = (page - 1) * limit;
+
         const items = await Item.find(searchFilter)
+            .skip(skip)
+            .limit(limit)
             .populate('category')
             .populate('createdBy', 'name')
             .populate('updatedBy', 'name');
-        return new Response(JSON.stringify(items), { headers });
+
+       const totalItems = await Item.countDocuments(searchFilter);
+       const totalPages = Math.ceil(totalItems / limit);
+
+      return new Response(
+            JSON.stringify({
+                items,
+                pagination: {
+                    page,
+                    limit,
+                    totalPages,
+                    totalItems
+                }
+            }),
+            { headers }
+        );
     } catch (e) {
         console.error(e);
-        return new Response("Failed to fetch all items", { status: 500, headers });
+        return new Response("Failed to fetch items", { status: 500, headers });
     }
 };
 
