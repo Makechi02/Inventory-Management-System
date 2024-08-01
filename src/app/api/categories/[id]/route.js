@@ -19,13 +19,13 @@ export const GET = async (request, { params }) => {
 export const PUT = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
-    const {name} = await request.json();
+    const {name, updatedBy} = await request.json();
     try {
         await connectToDB();
         const response = await Category.updateOne(
             { _id: params.id },
             {
-                $set: {name, updatedAt: Date.now()}
+                $set: {name, updatedAt: Date.now(), updatedBy}
             }
         );
         return new Response(JSON.stringify(response), { status: 200, headers });

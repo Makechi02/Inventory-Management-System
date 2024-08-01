@@ -15,7 +15,9 @@ export const GET = async (request) => {
             $or: [
                 { name: new RegExp(query, "i") }
             ]
-        });
+        })
+            .populate('createdBy', 'name')
+            .populate('updatedBy', 'name');
         return new Response(JSON.stringify(categories), { headers });
     } catch (e) {
         console.log(e);
@@ -26,11 +28,11 @@ export const GET = async (request) => {
 export const POST = async (request) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
-    const { name } = await request.json();
+    const { name, createdBy, updatedBy } = await request.json();
 
     try {
         await connectToDB();
-        const newCategory = new Category({ name });
+        const newCategory = new Category({ name, createdBy, updatedBy });
 
         await newCategory.save();
 

@@ -6,6 +6,15 @@ const CategorySchema = new Schema({
         unique: [true, ""],
         required: [true, 'Name is required']
     },
+    createdBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    updatedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     createdAt: {
         type: Date,
         default: Date.now

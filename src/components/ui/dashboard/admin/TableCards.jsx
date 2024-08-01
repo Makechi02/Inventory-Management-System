@@ -30,6 +30,10 @@ export const CategoryCard = ({category, handleDelete}) => {
     return (
         <div className={`bg-gray-100 shadow rounded-lg p-4 mt-3`}>
             <Card title={`name`} text={category.name}/>
+            <Card title={`created by`} text={category.createdBy.name}/>
+            <Card title={`created at`} text={DateUtil.formatDate(category.createdAt)}/>
+            <Card title={`updated by`} text={category?.updatedBy?.name}/>
+            <Card title={`updated at`} text={DateUtil.formatDate(category.updatedAt)}/>
             <ActionsCard
                 href={`/dashboard/admin/categories/edit/${category._id}`}
                 handleDelete={() => handleDelete(category)}
@@ -41,13 +45,13 @@ export const CategoryCard = ({category, handleDelete}) => {
 export const ItemCard = ({item, handleDelete}) => {
     return (
         <div className={`bg-gray-100 shadow rounded-lg p-4 mt-3`}>
-            <Card title={`name`} text={item.name} />
-            <Card title={`brand`} text={item.brand} />
-            <Card title={`model`} text={item.model} />
-            <Card title={`SKU`} text={item.sku} />
-            <Card title={`quantity`} text={item.quantity} />
+            <Card title={`name`} text={item.name}/>
+            <Card title={`brand`} text={item.brand}/>
+            <Card title={`model`} text={item.model}/>
+            <Card title={`SKU`} text={item.sku}/>
+            <Card title={`quantity`} text={item.quantity}/>
             <Card title={`price`} text={item.price} />
-            <Card title={`category`} text={item.category.name} />
+            <Card title={`category`} text={item.category?.name ? item.category.name : 'unknown'} />
             <ActionsCard
                 href={`/dashboard/admin/items/edit/${item._id}`}
                 handleDelete={() => handleDelete(item)}
