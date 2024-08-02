@@ -80,6 +80,8 @@ export const SupplierCard = ({supplier, handleDelete}) => {
     return (
         <div className={`bg-gray-100 shadow rounded-lg p-4 mt-3`}>
             <Card title={`name`} text={supplier.name}/>
+            <Card title={`phone`} text={supplier.phone}/>
+            <Card title={`address`} text={supplier.address}/>
             <Card title={`added by`} text={supplier.addedBy.name}/>
             <Card title={`added at`} text={DateUtil.formatDate(supplier.addedAt)}/>
             <Card title={`updated by`} text={supplier?.updatedBy?.name}/>

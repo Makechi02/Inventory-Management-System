@@ -6,29 +6,30 @@ import {useEffect, useState} from "react";
 import ItemService from "@/service/ItemService";
 import DateUtil from "@/utils/dateUtil";
 import {FaTrashCan} from "react-icons/fa6";
-import Swal from "sweetalert2";
 import BackBtn from "@/components/ui/dashboard/BackBtn";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import {showConfirmDialog, showSuccessDialog} from "@/utils/sweetalertUtil";
+import {useRouter} from "next/navigation";
 
 const Page = ({params}) => {
     const [item, setItem] = useState({});
+    const router = useRouter();
 
     const handleDelete = (item) => {
-        Swal.fire({
-            title: "Are you sure you want to delete this item?",
-            showCancelButton: true,
-            confirmButtonText: "Yes",
-        }).then((result) => {
-            if (result.isConfirmed) deleteItem(item);
-        });
+        showConfirmDialog(
+            `Are you sure you want to delete this item?`,
+            () => deleteItem(item)
+        );
     };
 
     const deleteItem = (item) => {
         ItemService.deleteItem(item._id)
             .then(response => {
                 if (response.status === 200) {
-                    Swal.fire("Item deleted successfully", "", "success")
-                        .then(() => window.location.reload());
+                    showSuccessDialog(
+                        'Item deleted successfully',
+                        () => router.push("/dashboard/admin/items")
+                    );
                 }
             })
             .catch(error => console.error(error));

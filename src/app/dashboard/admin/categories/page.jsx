@@ -8,9 +8,9 @@ import CategoryService from "@/service/CategoryService";
 import {CategoryCard} from "@/components/ui/dashboard/admin/TableCards";
 import SearchForm from "@/components/ui/dashboard/admin/SearchForm";
 import {useSearchParams} from "next/navigation";
-import Swal from "sweetalert2";
 import DateUtil from "@/utils/dateUtil";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import {showConfirmDialog, showSuccessDialog} from "@/utils/sweetalertUtil";
 
 const Page = () => {
     const [categories, setCategories] = useState([]);
@@ -20,22 +20,18 @@ const Page = () => {
     const query = searchParams.get("query");
 
     const handleDelete = (category) => {
-        Swal.fire({
-            title: `Are you sure you want to delete ${category.name} category?`,
-            showCancelButton: true,
-            confirmButtonText: "Yes",
-        }).then((result) => {
-            if (result.isConfirmed) deleteCategory(category);
-        });
+        showConfirmDialog(
+            `Are you sure you want to delete the ${category.name} category?`,
+            () => deleteCategory(category)
+        );
     }
+
 
     const deleteCategory = (category) => {
         CategoryService.deleteCategory(category._id)
             .then(response => {
-                if (response.status === 200) {
-                    Swal.fire("Category deleted successfully", "", "success")
-                        .then(() => window.location.reload());
-                }
+                if (response.status === 200)
+                    showSuccessDialog('Category deleted successfully', () => window.location.reload());
             })
             .catch(error => console.error(error));
     }

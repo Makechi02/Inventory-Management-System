@@ -10,9 +10,9 @@ import {ItemCard} from '@/components/ui/dashboard/admin/TableCards';
 import SearchForm from '@/components/ui/dashboard/admin/SearchForm';
 import FiltersModal from '@/components/ui/dashboard/admin/FiltersModal';
 import CategoryService from '@/service/CategoryService';
-import Swal from 'sweetalert2';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
-import Pagination from "@/components/ui/dashboard/admin/items/Pagination"; // Import the spinner
+import Pagination from "@/components/ui/dashboard/admin/items/Pagination";
+import {showConfirmDialog, showSuccessDialog} from "@/utils/sweetalertUtil";
 
 const Page = () => {
     const [items, setItems] = useState([]);
@@ -34,21 +34,17 @@ const Page = () => {
     const maxPrice = searchParams.get('maxPrice');
 
     const handleDelete = (item) => {
-        Swal.fire({
-            title: 'Are you sure you want to delete this item?',
-            showCancelButton: true,
-            confirmButtonText: 'Yes',
-        }).then((result) => {
-            if (result.isConfirmed) deleteItem(item);
-        });
+        showConfirmDialog(
+            `Are you sure you want to delete this item?`,
+            () => deleteItem(item)
+        );
     };
 
     const deleteItem = (item) => {
         ItemService.deleteItem(item._id)
             .then(response => {
                 if (response.status === 200) {
-                    Swal.fire('Item deleted successfully', '', 'success')
-                        .then(() => window.location.reload());
+                    showSuccessDialog('Item deleted successfully', () => window.location.reload());
                 }
             })
             .catch(error => console.error(error));

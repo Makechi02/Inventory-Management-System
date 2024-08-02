@@ -5,6 +5,7 @@ import {FaChevronLeft} from "react-icons/fa";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import {UserAuthService} from "@/service/UserService";
+import {showSuccessDialog} from "@/utils/sweetalertUtil";
 
 const Page = () => {
     const [name, setName] = useState("");
@@ -32,8 +33,7 @@ const Page = () => {
 
         UserAuthService.saveUser(newUser)
             .then(response => {
-                alert(response.data.message);
-                router.back();
+                showSuccessDialog(response.data.message, () => router.back());
             })
             .catch(error => {
                 const response = error?.response;

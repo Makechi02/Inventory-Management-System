@@ -4,8 +4,8 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import ItemService from "@/service/ItemService";
 import CategoryService from "@/service/CategoryService";
-import Swal from "sweetalert2";
 import SupplierService from "@/service/SupplierService";
+import {showSuccessDialog} from "@/utils/sweetalertUtil";
 
 const AddItemForm = ({userID}) => {
     const [name, setName] = useState("");
@@ -61,12 +61,10 @@ const AddItemForm = ({userID}) => {
 
         try {
             const newItem = {name, brand, model, quantity, price, category, supplier, createdBy: userID, updatedBy: userID};
-
             const response = await ItemService.addItem(newItem);
 
             if (response.status === 201) {
-                Swal.fire("New Item added successfully", "", "success")
-                    .then(() => router.back());
+                showSuccessDialog('New Item added successfully', () => router.back());
             }
         } catch (e) {
             console.error(e);

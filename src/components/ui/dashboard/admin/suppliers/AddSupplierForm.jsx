@@ -1,9 +1,9 @@
 "use client"
 
-import Swal from "sweetalert2";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import SupplierService from "@/service/SupplierService";
+import {showSuccessDialog} from "@/utils/sweetalertUtil";
 
 const AddSupplierForm = ({userID}) => {
     const [name, setName] = useState("");
@@ -38,8 +38,7 @@ const AddSupplierForm = ({userID}) => {
             const newSupplier = {name, phone, address, addedBy: userID, updatedBy: userID};
             const response = await SupplierService.addSupplier(newSupplier);
             if (response.status === 201) {
-                Swal.fire("New Supplier added successfully", "", "success")
-                    .then(() => router.back());
+                showSuccessDialog('New Supplier added successfully', () => router.back());
             }
         } catch (e) {
             console.error(e);
@@ -49,7 +48,7 @@ const AddSupplierForm = ({userID}) => {
     return (
         <form className={`flex flex-col gap-2`} onSubmit={handleAddSupplier}>
             <p className={`text-red-500`}>{errorMessage && errorMessage}</p>
-            <div className={`grid grid-cols-2 gap-4`}>
+            <div className={`grid sm:grid-cols-2 gap-4`}>
                 <div className={`input-box`}>
                     <label htmlFor={`name`} className={`dashboard-label`}>Name:</label>
                     <input

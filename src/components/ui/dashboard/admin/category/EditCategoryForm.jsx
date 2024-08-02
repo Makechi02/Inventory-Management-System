@@ -3,7 +3,7 @@
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import CategoryService from "@/service/CategoryService";
-import Swal from "sweetalert2";
+import {showSuccessDialog} from "@/utils/sweetalertUtil";
 
 const EditCategoryForm = ({categoryID, userID}) => {
     const [category, setCategory] = useState({});
@@ -28,8 +28,7 @@ const EditCategoryForm = ({categoryID, userID}) => {
         CategoryService.updateCategory(categoryID, data)
             .then(response => {
                 if (response.status === 200) {
-                    Swal.fire("Category updated successfully", "", "success")
-                        .then(() => router.back());
+                    showSuccessDialog('Category updated successfully', () => router.back());
                 }
             });
     }

@@ -5,6 +5,7 @@ import {FaChevronLeft} from "react-icons/fa";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import {UserService} from "@/service/UserService";
+import {showSuccessDialog} from "@/utils/sweetalertUtil";
 
 const Page = ({params}) => {
     const [user, setUser] = useState({});
@@ -35,12 +36,10 @@ const Page = ({params}) => {
 
         try {
             const updatedUser = {name, email, role};
-
             const response = await UserService.updateUser(user._id, updatedUser);
 
             if (response.status === 200) {
-                alert("User updated successfully");
-                router.back();
+                showSuccessDialog('User updated successfully', () => router.back());
             }
         } catch (e) {
             console.error(e);

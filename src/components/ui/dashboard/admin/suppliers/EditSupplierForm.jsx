@@ -2,8 +2,8 @@
 
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
-import Swal from "sweetalert2";
 import SupplierService from "@/service/SupplierService";
+import {showSuccessDialog} from "@/utils/sweetalertUtil";
 
 const EditSupplierForm = ({supplierID, userID}) => {
     const [supplier, setSupplier] = useState({});
@@ -32,7 +32,6 @@ const EditSupplierForm = ({supplierID, userID}) => {
         }
 
         const updatedSupplier = {name, phone, address, updatedBy: userID};
-
         updateSupplier(updatedSupplier);
     }
 
@@ -40,8 +39,7 @@ const EditSupplierForm = ({supplierID, userID}) => {
         SupplierService.updateSupplier(supplierID, data)
             .then(response => {
                 if (response.status === 200) {
-                    Swal.fire("Supplier updated successfully", "", "success")
-                        .then(() => router.back());
+                    showSuccessDialog('Supplier updated successfully', () => router.back());
                 }
             });
     }
@@ -71,7 +69,7 @@ const EditSupplierForm = ({supplierID, userID}) => {
             <form className={`flex flex-col gap-2`} onSubmit={handleEditSupplier}>
                 <p className={`text-red-500`}>{errorMessage && errorMessage}</p>
 
-                <div className={`grid grid-cols-2 gap-4`}>
+                <div className={`grid sm:grid-cols-2 gap-4`}>
                     <div className={`input-box`}>
                         <label htmlFor={`name`} className={`dashboard-label`}>Name:</label>
                         <input

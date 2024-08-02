@@ -9,6 +9,7 @@ import {UserService} from "@/service/UserService";
 import DateUtil from "@/utils/dateUtil";
 import SearchForm from "@/components/ui/dashboard/admin/SearchForm";
 import {useSearchParams} from "next/navigation";
+import {showConfirmDialog, showSuccessDialog} from "@/utils/sweetalertUtil";
 
 const Page = () => {
     const [users, setUsers] = useState([]);
@@ -16,16 +17,17 @@ const Page = () => {
     const query = searchParams.get("query");
 
     const handleDelete = (user) => {
-        const choice = confirm(`Are you sure you want to delete user ${user.name}?`);
-        if (choice) deleteUser(user);
+        showConfirmDialog(
+            `Are you sure you want to delete user ${user.name}?`,
+            () => deleteUser(user)
+        );
     }
 
     const deleteUser = (user) => {
         UserService.deleteUser(user._id)
             .then(response => {
                 if (response.status === 200) {
-                    alert("User deleted successfully");
-                    window.location.reload();
+                    showSuccessDialog('User deleted successfully', () => window.location.reload());
                 }
             })
             .catch(error => console.error(error));

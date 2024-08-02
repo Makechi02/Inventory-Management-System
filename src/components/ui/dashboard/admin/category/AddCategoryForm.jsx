@@ -1,9 +1,9 @@
 "use client"
 
 import CategoryService from "@/service/CategoryService";
-import Swal from "sweetalert2";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
+import {showSuccessDialog} from "@/utils/sweetalertUtil";
 
 const AddCategoryForm = ({userID}) => {
     const [name, setName] = useState("");
@@ -26,8 +26,7 @@ const AddCategoryForm = ({userID}) => {
             const newCategory = {name, createdBy: userID, updatedBy: userID};
             const response = await CategoryService.addCategory(newCategory);
             if (response.status === 201) {
-                Swal.fire("New Category added successfully", "", "success")
-                    .then(() => router.back());
+                showSuccessDialog('New Category added successfully', () => router.back());
             }
         } catch (e) {
             console.error(e);

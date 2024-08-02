@@ -7,10 +7,10 @@ import {useEffect, useState} from "react";
 import {SupplierCard} from "@/components/ui/dashboard/admin/TableCards";
 import SearchForm from "@/components/ui/dashboard/admin/SearchForm";
 import {useSearchParams} from "next/navigation";
-import Swal from "sweetalert2";
 import DateUtil from "@/utils/dateUtil";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import SupplierService from "@/service/SupplierService";
+import {showConfirmDialog, showSuccessDialog} from "@/utils/sweetalertUtil";
 
 const Page = () => {
     const [suppliers, setSuppliers] = useState([]);
@@ -20,21 +20,17 @@ const Page = () => {
     const query = searchParams.get("query");
 
     const handleDelete = (supplier) => {
-        Swal.fire({
-            title: `Are you sure you want to delete ${supplier.name} supplier?`,
-            showCancelButton: true,
-            confirmButtonText: "Yes",
-        }).then((result) => {
-            if (result.isConfirmed) deleteSupplier(supplier);
-        });
+        showConfirmDialog(
+            `Are you sure you want to delete ${supplier.name} supplier?`,
+            () => deleteSupplier(supplier)
+        );
     }
 
     const deleteSupplier = (supplier) => {
         SupplierService.deleteSupplier(supplier._id)
             .then(response => {
                 if (response.status === 200) {
-                    Swal.fire("Supplier deleted successfully", "", "success")
-                        .then(() => window.location.reload());
+                    showSuccessDialog('Supplier deleted successfully', () => window.location.reload());
                 }
             })
             .catch(error => console.error(error));
