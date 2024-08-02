@@ -30,7 +30,7 @@ export const CategoryCard = ({category, handleDelete}) => {
     return (
         <div className={`bg-gray-100 shadow rounded-lg p-4 mt-3`}>
             <Card title={`name`} text={category.name}/>
-            <Card title={`created by`} text={category.createdBy.name}/>
+            <Card title={`created by`} text={category?.createdBy?.name}/>
             <Card title={`created at`} text={DateUtil.formatDate(category.createdAt)}/>
             <Card title={`updated by`} text={category?.updatedBy?.name}/>
             <Card title={`updated at`} text={DateUtil.formatDate(category.updatedAt)}/>

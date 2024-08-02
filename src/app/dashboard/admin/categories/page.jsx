@@ -100,7 +100,7 @@ const CategoriesTable = ({categories, handleDelete}) => {
                             <tr key={category._id}>
                                 <td className={`table-data`}>{index + 1}</td>
                                 <td className={`table-data`}>{category.name}</td>
-                                <td className={`table-data`}>{category.createdBy.name}</td>
+                                <td className={`table-data`}>{category?.createdBy?.name}</td>
                                 <td className={`table-data`}>{DateUtil.formatDate(category.createdAt)}</td>
                                 <td className={`table-data`}>{category?.updatedBy?.name}</td>
                                 <td className={`table-data`}>{DateUtil.formatDate(category.updatedAt)}</td>
