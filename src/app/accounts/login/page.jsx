@@ -9,10 +9,15 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+
+    const [loading, setLoading] = useState(false);
+
     const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        setLoading(true);
 
         if (email === '') {
             setErrorMessage("Email can't be blank");
@@ -36,6 +41,8 @@ const Login = () => {
             const response = await fetch("/api/auth/session");
             const session = await response.json();
             const role = session.user.role;
+
+            setLoading(false);
 
             if (role === 'USER')
                 router.push("/dashboard/user");
@@ -86,7 +93,9 @@ const Login = () => {
                         />
                     </div>
 
-                    <button className={`bg-black text-white p-2 rounded-lg`}>Login</button>
+                    <button className={`bg-[#333333] hover:bg-black text-white p-2 rounded-lg`}>
+                        {loading ? "Loading..." : "Login"}
+                    </button>
                 </form>
 
                 <div className={`flex justify-between`}>
