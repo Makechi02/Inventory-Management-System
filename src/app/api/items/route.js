@@ -1,5 +1,8 @@
 import {connectToDB} from "@/utils/database";
 import Item from "@/models/item";
+import Supplier from '@/models/supplier';
+import Category from '@/models/category';
+import User from '@/models/user';
 import {getCorsHeaders} from "@/app/api/options";
 
 export const GET = async (request) => {
