@@ -9,53 +9,59 @@ import {showSuccessDialog} from "@/utils/sweetalertUtil";
 
 const EditItemForm = ({itemID, userID}) => {
     const [item, setItem] = useState({});
-    const [name, setName] = useState(item.name);
-    const [brand, setBrand] = useState(item.brand);
-    const [model, setModel] = useState(item.model);
-    const [quantity, setQuantity] = useState(item.quantity)
-    const [price, setPrice] = useState(item.price);
-    const [category, setCategory] = useState(item.category);
-    const [supplier, setSupplier] = useState(item.supplier);
+    const [name, setName] = useState('');
+    const [brand, setBrand] = useState('');
+    const [model, setModel] = useState('');
+    const [quantity, setQuantity] = useState('');
+    const [price, setPrice] = useState('');
+    const [category, setCategory] = useState('');
+    const [supplier, setSupplier] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [categories, setCategories] = useState();
-    const [suppliers, setSuppliers] = useState();
+    const [categories, setCategories] = useState([]);
+    const [suppliers, setSuppliers] = useState([]);
     const router = useRouter();
 
     useEffect(() => {
-        const fetchAllCategories = () => {
-            CategoryService.getAllCategories()
-                .then(response => setCategories(response.data))
-                .catch(error => console.error(error));
+        const fetchAllCategories = async () => {
+            try {
+                const response = await CategoryService.getAllCategories();
+                setCategories(response.data);
+            } catch (error) {
+                console.error(error);
+            }
         };
 
-        const fetchAllSuppliers = () => {
-            SupplierService.getAllSuppliers()
-                .then(response => setSuppliers(response.data))
-                .catch(error => console.error(error));
-        }
+        const fetchAllSuppliers = async () => {
+            try {
+                const response = await SupplierService.getAllSuppliers();
+                setSuppliers(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
 
-        const fetchItemByID = () => {
-            ItemService.getItemById(itemID)
-                .then(response => {
-                    setItem(response.data[0]);
-                    fetchAllCategories();
-                    fetchAllSuppliers();
-                })
-                .catch(error => console.error(error));
-        }
+        const fetchItemByID = async () => {
+            try {
+                const response = await ItemService.getItemById(itemID);
+                const itemData = response.data[0];
+                setItem(itemData);
+                setName(itemData.name);
+                setBrand(itemData.brand);
+                setModel(itemData.model);
+                setQuantity(itemData.quantity);
+                setPrice(itemData.price);
+                setCategory(itemData.category);
+                setSupplier(itemData.supplier);
+
+                fetchAllCategories();
+                fetchAllSuppliers();
+            } catch (error) {
+                console.error(error);
+            }
+        };
 
         fetchItemByID();
-    }, []);
-
-    useEffect(() => {
-        setName(item.name);
-        setBrand(item.brand);
-        setModel(item.model);
-        setQuantity(item.quantity);
-        setPrice(item.price);
-        setCategory(item.category);
-        setSupplier(item.supplier);
-    }, [item]);
+    }, [itemID]);
 
     useEffect(() => {
         setErrorMessage("");
@@ -64,28 +70,30 @@ const EditItemForm = ({itemID, userID}) => {
     const handleEditItem = async (e) => {
         e.preventDefault();
 
-        if (name === '') {
-            setErrorMessage("Item name is blank");
+        if (!name.trim()) {
+            setErrorMessage("Item name is required");
             return;
         }
 
-        if (brand === '') {
-            setErrorMessage("Brand is blank");
+        if (!brand.trim()) {
+            setErrorMessage("Item brand is required");
             return;
         }
 
-        if (model === '') {
-            setErrorMessage("Model is blank");
+        if (!model.trim()) {
+            setErrorMessage("Model is required");
             return;
         }
 
-        if (quantity <= 0) {
-            setErrorMessage("Invalid quantity");
+        const numericQuantity = parseFloat(quantity);
+        if (isNaN(numericQuantity) || numericQuantity <= 0) {
+            setErrorMessage("Quantity must be a positive number");
             return;
         }
 
-        if (price <= 0) {
-            setErrorMessage("Invalid price");
+        const numericPrice = parseFloat(price);
+        if (isNaN(numericPrice) || numericPrice <= 0) {
+            setErrorMessage("Price must be a positive number");
             return;
         }
 
@@ -100,7 +108,16 @@ const EditItemForm = ({itemID, userID}) => {
         }
 
         try {
-            const updatedItem = {name, brand, model, quantity, price, category, supplier, updatedBy: userID};
+            const updatedItem = {
+                name,
+                brand,
+                model,
+                quantity: numericQuantity,
+                price: numericPrice,
+                category,
+                supplier,
+                updatedBy: userID
+            };
             const response = await ItemService.updateItem(item._id, updatedItem);
 
             if (response.status === 200) {
@@ -108,14 +125,17 @@ const EditItemForm = ({itemID, userID}) => {
             }
         } catch (e) {
             console.error(e);
+            setErrorMessage("Failed to update item");
         }
-    }
+    };
 
     return (
-        <form className={`flex flex-col gap-3`} onSubmit={handleEditItem}>
-            <p className={`text-red-500`}>
-                {errorMessage && errorMessage}
-            </p>
+        <form className={`space-y-6`} onSubmit={handleEditItem}>
+            {errorMessage && (
+                <div className="bg-red-100 text-red-800 p-4 rounded-lg">
+                    <p>{errorMessage}</p>
+                </div>
+            )}
 
             <div className={`grid sm:grid-cols-2 gap-4`}>
                 <div className={`input-box`}>
@@ -185,9 +205,9 @@ const EditItemForm = ({itemID, userID}) => {
                         value={category?._id}
                         onChange={event => setCategory(event.target.value)}
                     >
-                        <option>-- select category --</option>
-                        {categories?.map((category, index) => (
-                            <option key={index} value={category._id}>{category.name}</option>
+                        <option value="">-- select category --</option>
+                        {categories?.map((cat) => (
+                            <option key={cat._id} value={cat._id}>{cat.name}</option>
                         ))}
                     </select>
                 </div>
@@ -200,17 +220,17 @@ const EditItemForm = ({itemID, userID}) => {
                         value={supplier?._id}
                         onChange={event => setSupplier(event.target.value)}
                     >
-                        <option>-- select supplier --</option>
-                        {suppliers?.map((supplier, index) => (
-                            <option key={index} value={supplier._id}>{supplier.name}</option>
+                        <option value="">-- select supplier --</option>
+                        {suppliers?.map((supp) => (
+                            <option key={supp._id} value={supp._id}>{supp.name}</option>
                         ))}
                     </select>
                 </div>
             </div>
 
-            <button className={`add-btn w-fit mt-4`} type={`submit`}>Save</button>
+            <button className={`dashboard-submit-btn`} type={`submit`}>Save Item</button>
         </form>
-    )
-}
+    );
+};
 
 export default EditItemForm;

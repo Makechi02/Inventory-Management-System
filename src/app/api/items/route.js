@@ -1,9 +1,8 @@
 import {connectToDB} from "@/utils/database";
 import Item from "@/models/item";
-import Supplier from '@/models/supplier';
-import Category from '@/models/category';
-import User from '@/models/user';
 import {getCorsHeaders} from "@/app/api/options";
+import {validateItem} from "@/utils/validation";
+import {sanitizeInput} from "@/utils/sanitization";
 
 export const GET = async (request) => {
     const origin = request.headers.get('origin');
@@ -59,12 +58,7 @@ export const GET = async (request) => {
       return new Response(
             JSON.stringify({
                 items,
-                pagination: {
-                    page,
-                    limit,
-                    totalPages,
-                    totalItems
-                }
+                pagination: {page, limit, totalPages, totalItems}
             }),
             { headers }
         );
@@ -80,14 +74,21 @@ export const POST = async (request) => {
 
     const item = await request.json();
 
+    const validationErrors = validateItem(item);
+    if (validationErrors.length > 0) {
+        return new Response(JSON.stringify({ errors: validationErrors }), { status: 400, headers });
+    }
+
+    const sanitizedItem = sanitizeInput(item);
+
     try {
         await connectToDB();
-        const newItem = new Item(item);
+        const newItem = new Item(sanitizedItem);
         await newItem.save();
         return new Response(JSON.stringify(newItem), { status: 201, headers });
     } catch (e) {
         console.error(e);
-        return new Response("Failed to create a new item", { status: 500, headers });
+        return new Response("Failed to create a new items", { status: 500, headers });
     }
 };
 

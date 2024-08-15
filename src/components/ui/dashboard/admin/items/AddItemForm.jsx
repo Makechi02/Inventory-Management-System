@@ -11,41 +11,43 @@ const AddItemForm = ({userID}) => {
     const [name, setName] = useState("");
     const [brand, setBrand] = useState("");
     const [model, setModel] = useState("");
-    const [quantity, setQuantity] = useState(0)
-    const [price, setPrice] = useState(0);
-    const [category, setCategory] = useState();
-    const [supplier, setSupplier] = useState();
+    const [quantity, setQuantity] = useState("");
+    const [price, setPrice] = useState("");
+    const [category, setCategory] = useState("");
+    const [supplier, setSupplier] = useState("");
     const [errorMessage, setErrorMessage] = useState('');
     const [categories, setCategories] = useState([]);
-    const [suppliers, setSuppliers] = useState();
+    const [suppliers, setSuppliers] = useState([]);
 
     const router = useRouter();
 
     const handleAddItem = async (e) => {
         e.preventDefault();
 
-        if (name === '') {
-            setErrorMessage("Item name is blank");
+        if (!name.trim()) {
+            setErrorMessage("Item name is required");
             return;
         }
 
-        if (brand === '') {
-            setErrorMessage("Item brand is blank");
+        if (!brand.trim()) {
+            setErrorMessage("Item brand is required");
             return;
         }
 
-        if (model === '') {
-            setErrorMessage("Model is blank");
+        if (!model.trim()) {
+            setErrorMessage("Model is required");
             return;
         }
 
-        if (quantity <= 0) {
-            setErrorMessage("Invalid quantity");
+        const numericQuantity = parseFloat(quantity);
+        if (isNaN(numericQuantity) || numericQuantity <= 0) {
+            setErrorMessage("Quantity must be a positive number");
             return;
         }
 
-        if (price <= 0) {
-            setErrorMessage("Invalid price");
+        const numericPrice = parseFloat(price);
+        if (isNaN(numericPrice) || numericPrice <= 0) {
+            setErrorMessage("Price must be a positive number");
             return;
         }
 
@@ -68,24 +70,31 @@ const AddItemForm = ({userID}) => {
             }
         } catch (e) {
             console.error(e);
+            setErrorMessage("Failed to add the items. Please try again.");
         }
-    }
+    };
 
-    useEffect(() => {
-        const fetchAllCategories = () => {
-            CategoryService.getAllCategories()
-                .then(response => setCategories(response.data))
-                .catch(error => console.error(error));
+    useEffect(async () => {
+        const fetchAllCategories = async () => {
+            try {
+                const response = await CategoryService.getAllCategories();
+                setCategories(response.data);
+            } catch (error) {
+                console.error(error);
+            }
         };
 
-        const fetchAllSuppliers = () => {
-            SupplierService.getAllSuppliers()
-                .then(response => setSuppliers(response.data))
-                .catch(error => console.error(error));
-        }
+        const fetchAllSuppliers = async () => {
+            try {
+                const response = await SupplierService.getAllSuppliers();
+                setSuppliers(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
 
-        fetchAllCategories();
-        fetchAllSuppliers();
+        await fetchAllCategories();
+        await fetchAllSuppliers();
     }, []);
 
     useEffect(() => {
@@ -93,10 +102,14 @@ const AddItemForm = ({userID}) => {
     }, [name, brand, model, quantity, price, category, supplier]);
 
     return (
-        <form className={`flex flex-col gap-4`} onSubmit={handleAddItem}>
-            <p className={`text-red-500`}>{errorMessage && errorMessage}</p>
+        <form className={`space-y-6`} onSubmit={handleAddItem}>
+            {errorMessage && (
+                <div className="bg-red-100 text-red-800 p-4 rounded-lg">
+                    <p>{errorMessage}</p>
+                </div>
+            )}
 
-            <div className={`grid sm:grid-cols-2 gap-4`}>
+            <div className={`grid grid-cols-1 sm:grid-cols-2 gap-6`}>
                 <div className={`input-box`}>
                     <label htmlFor={`name`} className={`dashboard-label`}>Name:</label>
                     <input
@@ -140,7 +153,6 @@ const AddItemForm = ({userID}) => {
                         id={`quantity`}
                         value={quantity}
                         onChange={event => setQuantity(event.target.value)}
-                        enterKeyHint={`next`}
                         className={`dashboard-input`}
                     />
                 </div>
@@ -164,8 +176,8 @@ const AddItemForm = ({userID}) => {
                         onChange={event => setCategory(event.target.value)}
                     >
                         <option>-- select category --</option>
-                        {categories.map((category, index) => (
-                            <option key={index} value={category._id}>{category.name}</option>
+                        {categories.map((cat) => (
+                            <option key={cat._id} value={cat._id}>{cat.name}</option>
                         ))}
                     </select>
                 </div>
@@ -179,16 +191,16 @@ const AddItemForm = ({userID}) => {
                         onChange={event => setSupplier(event.target.value)}
                     >
                         <option>-- select supplier --</option>
-                        {suppliers?.map((supplier, index) => (
-                            <option key={index} value={supplier._id}>{supplier.name}</option>
+                        {suppliers.map((sup) => (
+                            <option key={sup._id} value={sup._id}>{sup.name}</option>
                         ))}
                     </select>
                 </div>
             </div>
 
-            <button className={`add-btn w-fit mt-4`} type={`submit`}>Add</button>
+            <button className={`dashboard-submit-btn`} type={`submit`}>Add Item</button>
         </form>
-    )
-}
+    );
+};
 
 export default AddItemForm;
