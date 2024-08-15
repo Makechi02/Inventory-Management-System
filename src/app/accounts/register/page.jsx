@@ -11,10 +11,15 @@ const Page = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+
+    const [loading, setLoading] = useState(false);
+
     const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        setLoading(true);
 
         if (name === '') {
             setErrorMessage("Name can't be blank");
@@ -39,10 +44,12 @@ const Page = () => {
 
         UserAuthService.saveUser({name, email, password, role: "USER"})
             .then(response => {
+                setLoading(false);
                 alert(response.data.message);
                 router.push("/accounts/login");
             })
             .catch(error => {
+                setLoading(false);
                 const response = error?.response;
                 if (response.status === 409) {
                     setErrorMessage(response.data.message);
@@ -70,7 +77,7 @@ const Page = () => {
                         )}
                     </div>
 
-                    <div className={`input-box`}>
+                    <div className={`login-input-box`}>
                         <label htmlFor={`name`} className={`label`}>Full Name *</label>
                         <input
                             type={`text`}
@@ -81,7 +88,7 @@ const Page = () => {
                         />
                     </div>
 
-                    <div className={`input-box`}>
+                    <div className={`login-input-box`}>
                         <label htmlFor={`email`} className={`label`}>Email address *</label>
                         <input
                             type={`email`}
@@ -92,7 +99,7 @@ const Page = () => {
                         />
                     </div>
 
-                    <div className={`input-box`}>
+                    <div className={`login-input-box`}>
                         <label htmlFor={`password`} className={`label`}>Password *</label>
                         <input
                             type={`password`}
@@ -103,7 +110,7 @@ const Page = () => {
                         />
                     </div>
 
-                    <div className={`input-box`}>
+                    <div className={`login-input-box`}>
                         <label htmlFor={`confirm-password`} className={`label`}>Confirm Password *</label>
                         <input
                             type={`password`}
@@ -114,7 +121,9 @@ const Page = () => {
                         />
                     </div>
 
-                    <button className={`bg-black text-white p-2 rounded-lg`}>Sign Up</button>
+                    <button className={`bg-[#333333] hover:bg-black text-white p-2 rounded-lg`}>
+                        {loading ? "Loading..." : "Sign Up"}
+                    </button>
                 </form>
 
                 <div className={`flex items-center gap-1`}>

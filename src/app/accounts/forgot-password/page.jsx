@@ -41,7 +41,7 @@ const Page = () => {
                         )}
                     </div>
 
-                    <div className={`input-box`}>
+                    <div className={`login-input-box`}>
                         <label htmlFor={`email`} className={`label`}>Email address *</label>
                         <input
                             type={`email`}
@@ -52,7 +52,7 @@ const Page = () => {
                         />
                     </div>
 
-                    <button className={`bg-black text-white p-2 rounded-lg`}>Recover Password</button>
+                    <button className={`bg-[#333333] hover:bg-black text-white p-2 rounded-lg`}>Recover Password</button>
                 </form>
             </div>
         </div>

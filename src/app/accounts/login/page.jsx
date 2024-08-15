@@ -36,6 +36,7 @@ const Login = () => {
         });
 
         if (result.error) {
+            setLoading(false);
             setErrorMessage(result.error);
         } else {
             const response = await fetch("/api/auth/session");
@@ -69,7 +70,7 @@ const Login = () => {
                         )}
                     </div>
 
-                    <div className={`input-box`}>
+                    <div className={`login-input-box`}>
                         <label htmlFor={`email`} className={`label`}>Email address *</label>
                         <input
                             type={`email`}
@@ -81,7 +82,7 @@ const Login = () => {
                         />
                     </div>
 
-                    <div className={`input-box`}>
+                    <div className={`login-input-box`}>
                         <label htmlFor={`password`} className={`label`}>Password *</label>
                         <input
                             type={`password`}
