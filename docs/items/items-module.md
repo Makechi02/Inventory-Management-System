@@ -156,9 +156,10 @@ The Items module manages the inventory of items within the system. It supports C
 ## Usage Examples
 
 ### Adding an Item
-```json
+```
 POST /api/items
-
+```
+```json
 {
   "name": "Sample Item",
   "brand": "Brand X",
@@ -173,13 +174,15 @@ POST /api/items
 ```
 
 ### Viewing All Items
-```json
+```
 GET /api/items
 ```
 
 ### Editing an Item
-```json
+```
 PUT /api/items/:id
+```
+```json
 {
   "name": "Updated Item Name",
   "brand": "Updated Brand",
@@ -193,7 +196,7 @@ PUT /api/items/:id
 ```
 
 ### Deleting an Item
-```json
+```
 DELETE /api/items/:id
 ```
 

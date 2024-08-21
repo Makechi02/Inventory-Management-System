@@ -1,13 +1,12 @@
 "use client"
 
-import {FaPen} from "react-icons/fa";
+import {FaEye, FaPen} from "react-icons/fa";
 import {FaTrashCan} from "react-icons/fa6";
 import Link from "next/link";
 import {useEffect, useState} from "react";
 import {SupplierCard} from "@/components/ui/dashboard/admin/TableCards";
 import SearchForm from "@/components/ui/dashboard/admin/SearchForm";
 import {useSearchParams} from "next/navigation";
-import DateUtil from "@/utils/dateUtil";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import SupplierService from "@/service/SupplierService";
 import {showConfirmDialog, showSuccessDialog} from "@/utils/sweetalertUtil";
@@ -85,10 +84,6 @@ const SuppliersTable = ({suppliers, handleDelete}) => {
                             <th scope={`col`} className={`table-heading`}>Name</th>
                             <th scope={`col`} className={`table-heading`}>Phone</th>
                             <th scope={`col`} className={`table-heading`}>Address</th>
-                            <th scope={`col`} className={`table-heading`}>Added By</th>
-                            <th scope={`col`} className={`table-heading`}>Added At</th>
-                            <th scope={`col`} className={`table-heading`}>Updated By</th>
-                            <th scope={`col`} className={`table-heading`}>Updated At</th>
                             <th scope={`col`} className={`table-heading`}>Actions</th>
                         </tr>
                         </thead>
@@ -100,14 +95,18 @@ const SuppliersTable = ({suppliers, handleDelete}) => {
                                 <td className={`table-data`}>{supplier.name}</td>
                                 <td className={`table-data`}>{supplier.phone}</td>
                                 <td className={`table-data`}>{supplier.address}</td>
-                                <td className={`table-data`}>{supplier.addedBy.name}</td>
-                                <td className={`table-data`}>{DateUtil.formatDate(supplier.addedAt)}</td>
-                                <td className={`table-data`}>{supplier?.updatedBy?.name}</td>
-                                <td className={`table-data`}>{DateUtil.formatDate(supplier.updatedAt)}</td>
                                 <td className={`table-data flex`}>
                                     <Link
-                                        title={`Edit`}
+                                        title={`Preview`}
                                         className={`edit-btn`}
+                                        href={`/dashboard/admin/suppliers/${supplier._id}`}
+                                    >
+                                        <FaEye/>
+                                    </Link>
+
+                                    <Link
+                                        title={`Edit`}
+                                        className={`edit-btn ml-3`}
                                         href={`/dashboard/admin/suppliers/edit/${supplier._id}`}
                                     >
                                         <FaPen/>

@@ -16,3 +16,13 @@ export const validateItem = (item) => {
 
     return errors;
 };
+
+export const validateCategory = (category) => {
+    const errors = [];
+
+    if (!category.name || typeof category.name !== 'string') {
+        errors.push('Category name is required and must be a string.');
+    }
+
+    return errors;
+};

@@ -18,7 +18,7 @@ const AddCategoryForm = ({userID}) => {
         e.preventDefault();
 
         if (name === '') {
-            setErrorMessage("Category name is blank");
+            setErrorMessage("Category name is required");
             return;
         }
 
@@ -30,12 +30,17 @@ const AddCategoryForm = ({userID}) => {
             }
         } catch (e) {
             console.error(e);
+            setErrorMessage("Failed to add the category. Please try again.");
         }
     }
 
     return (
         <form className={`flex flex-col gap-2`} onSubmit={handleAddCategory}>
-            <p className={`text-red-500`}>{errorMessage && errorMessage}</p>
+            {errorMessage && (
+                <div className="bg-red-100 text-red-800 p-4 rounded-lg">
+                    <p>{errorMessage}</p>
+                </div>
+            )}
 
             <label htmlFor={`name`} className={`dashboard-label`}>Name:</label>
             <input
@@ -47,7 +52,7 @@ const AddCategoryForm = ({userID}) => {
                 className={`dashboard-input`}
                 onChange={event => setName(event.target.value)}
             />
-            <button className={`add-btn w-fit mt-4`} type={`submit`}>Add</button>
+            <button className={`dashboard-submit-btn`} type={`submit`}>Add Category</button>
         </form>
     )
 }

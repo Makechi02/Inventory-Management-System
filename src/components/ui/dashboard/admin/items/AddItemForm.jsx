@@ -70,11 +70,11 @@ const AddItemForm = ({userID}) => {
             }
         } catch (e) {
             console.error(e);
-            setErrorMessage("Failed to add the items. Please try again.");
+            setErrorMessage("Failed to add the item. Please try again.");
         }
     };
 
-    useEffect(async () => {
+    useEffect(() => {
         const fetchAllCategories = async () => {
             try {
                 const response = await CategoryService.getAllCategories();
@@ -93,8 +93,8 @@ const AddItemForm = ({userID}) => {
             }
         };
 
-        await fetchAllCategories();
-        await fetchAllSuppliers();
+        fetchAllCategories();
+        fetchAllSuppliers();
     }, []);
 
     useEffect(() => {

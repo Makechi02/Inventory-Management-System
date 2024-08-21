@@ -54,7 +54,6 @@ const Page = () => {
         setLoading(true);
         ItemService.getAllItems({ query, category, minPrice, maxPrice, page, limit })
             .then(response => {
-                console.log(response.data);
                 setItems(response.data.items);
                 setPage(response.data.pagination.page);
                 setTotalPages(response.data.pagination.totalPages);

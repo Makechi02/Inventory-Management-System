@@ -1,6 +1,7 @@
 import {connectToDB} from "@/utils/database";
 import Category from "@/models/category";
 import {getCorsHeaders} from "@/app/api/options";
+import {validateCategory} from "@/utils/validation";
 
 export const GET = async (request, { params }) => {
     const origin = request.headers.get('origin');
@@ -20,6 +21,12 @@ export const PUT = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
     const {name, updatedBy} = await request.json();
+
+    const errors = validateCategory({ name, updatedBy });
+    if (errors.length > 0) {
+        return new Response(JSON.stringify({ errors }), { status: 400, headers });
+    }
+
     try {
         await connectToDB();
         const response = await Category.updateOne(
@@ -37,9 +44,17 @@ export const PUT = async (request, { params }) => {
 export const DELETE = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
+
     try {
         await connectToDB();
-        await Category.deleteOne({ _id: params.id });
+
+        const category = await Category.findById(params.id);
+
+        if (!category) {
+            return new Response("Category not found", {status: 500, headers});
+        }
+
+        await Category.findByIdAndDelete(params.id);
         return new Response("Success", { status: 200, headers });
     } catch (e) {
         return new Response("Failed to delete category", { status: 500, headers });

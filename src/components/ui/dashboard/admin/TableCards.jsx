@@ -82,10 +82,6 @@ export const SupplierCard = ({supplier, handleDelete}) => {
             <Card title={`name`} text={supplier.name}/>
             <Card title={`phone`} text={supplier.phone}/>
             <Card title={`address`} text={supplier.address}/>
-            <Card title={`added by`} text={supplier.addedBy.name}/>
-            <Card title={`added at`} text={DateUtil.formatDate(supplier.addedAt)}/>
-            <Card title={`updated by`} text={supplier?.updatedBy?.name}/>
-            <Card title={`updated at`} text={DateUtil.formatDate(supplier.updatedAt)}/>
             <ActionsCard
                 href={`/dashboard/admin/suppliers/edit/${supplier._id}`}
                 handleDelete={() => handleDelete(supplier)}

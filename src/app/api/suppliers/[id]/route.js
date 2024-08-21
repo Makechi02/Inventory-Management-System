@@ -9,7 +9,10 @@ export const GET = async (request, { params }) => {
 
     try {
         await connectToDB();
-        const supplier = await Supplier.find({ _id: supplierID });
+        const supplier = await Supplier
+            .find({ _id: supplierID })
+            .populate('addedBy', 'name')
+            .populate('updatedBy', 'name');
         return new Response(JSON.stringify(supplier), { headers });
     } catch (e) {
         return new Response("Supplier with id not found", { status: 500, headers });

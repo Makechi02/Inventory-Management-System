@@ -2,6 +2,8 @@ import bcrypt from 'bcryptjs';
 import {connectToDB} from "@/utils/database";
 import User from "@/models/user";
 import {getCorsHeaders} from "@/app/api/options";
+import {validateUser} from "@/utils/validation";
+import {sanitizeUser} from "@/utils/sanitization";
 
 export async function POST(request) {
     const origin = request.headers.get('origin');
@@ -16,12 +18,15 @@ export async function POST(request) {
         }
 
         const hashedPassword = bcrypt.hashSync(password, 10);
-        const newUser = new User({
-            name,
-            email,
-            password: hashedPassword,
-            role
-        });
+
+        const errors = validateUser({ name, email, role });
+        if (errors.length > 0) {
+            return new Response(JSON.stringify({ errors }), { status: 400, headers });
+        }
+
+        const sanitizedUser = sanitizeUser({name, email, role, hashedPassword});
+
+        const newUser = new User(sanitizedUser);
 
         await newUser.save();
         return new Response(JSON.stringify({message: "User registered successfully"}), {status: 201, headers});

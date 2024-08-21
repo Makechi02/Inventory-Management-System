@@ -2,7 +2,7 @@ import {connectToDB} from "@/utils/database";
 import Item from "@/models/item";
 import {getCorsHeaders} from "@/app/api/options";
 import {validateItem} from "@/utils/validation";
-import {sanitizeInput} from "@/utils/sanitization";
+import {sanitizeItem} from "@/utils/sanitization";
 
 export const GET = async (request) => {
     const origin = request.headers.get('origin');
@@ -79,7 +79,7 @@ export const POST = async (request) => {
         return new Response(JSON.stringify({ errors: validationErrors }), { status: 400, headers });
     }
 
-    const sanitizedItem = sanitizeInput(item);
+    const sanitizedItem = sanitizeItem(item);
 
     try {
         await connectToDB();

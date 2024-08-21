@@ -15,11 +15,11 @@ const EditCategoryForm = ({categoryID, userID}) => {
         e.preventDefault();
 
         if (name === '') {
-            setErrorMessage("Category name is blank");
+            setErrorMessage("Category name is required");
             return;
         }
 
-        const updatedCategory = {name, updatedBy: userID};
+        const updatedCategory = {name: name.trim(), updatedBy: userID};
 
         updateCategory(updatedCategory);
     }
@@ -54,7 +54,11 @@ const EditCategoryForm = ({categoryID, userID}) => {
     return (
         category.name ? (
             <form className={`flex flex-col gap-2`} onSubmit={handleEditCategory}>
-                <p className={`text-red-500`}>{errorMessage && errorMessage}</p>
+                {errorMessage && (
+                    <div className="bg-red-100 text-red-800 p-4 rounded-lg">
+                        <p>{errorMessage}</p>
+                    </div>
+                )}
 
                 <label htmlFor={`name`} className={`dashboard-label`}>Name:</label>
                 <input

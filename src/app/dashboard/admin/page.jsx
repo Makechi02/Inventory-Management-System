@@ -8,46 +8,25 @@ const Dashboard = () => {
     const [metrics, setMetrics] = useState({
         totalUsers: 0,
         totalItems: 0,
-        totalCategories: 0
+        totalCategories: 0,
+        totalSuppliers: 0
     });
 
     const [recentUsers, setRecentUsers] = useState([]);
     const [recentItems, setRecentItems] = useState([]);
     const [recentCategories, setRecentCategories] = useState([]);
+    const [recentSuppliers, setRecentSuppliers] = useState([]);
+
     const [inventoryValuation, setInventoryValuation] = useState(0);
     const [itemsByCategory, setItemsByCategory] = useState([]);
 
     const barChartData = {
-        labels: ['Users', 'Items', 'Categories'],
+        labels: ['Users', 'Items', 'Categories', 'Suppliers'],
         datasets: [
             {
                 label: 'Count',
-                data: [metrics.totalUsers, metrics.totalItems, metrics.totalCategories],
-                backgroundColor: ['#3b82f6', '#f97316', '#10b981'],
-            },
-        ],
-    };
-
-    const lineChartData = {
-        labels: recentUsers.map(user => user.name),
-        datasets: [
-            {
-                label: 'Recent Users',
-                data: recentUsers.map(user => user._id.length),
-                borderColor: '#3b82f6',
-                backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                fill: true,
-            },
-        ],
-    };
-
-    const pieChartData = {
-        labels: recentCategories.map(category => category.name),
-        datasets: [
-            {
-                label: 'Recent Categories',
-                data: recentCategories.map(category => category._id.length),
-                backgroundColor: ['#3b82f6', '#f97316', '#10b981', '#ef4444', '#8b5cf6'],
+                data: [metrics.totalUsers, metrics.totalItems, metrics.totalCategories, metrics.totalSuppliers],
+                backgroundColor: ['#3b82f6', '#f97316', '#10b981', '#3b82f6'],
             },
         ],
     };
@@ -127,12 +106,14 @@ const Dashboard = () => {
                     setMetrics({
                         totalUsers: data.totalUsers,
                         totalItems: data.totalItems,
-                        totalCategories: data.totalCategories
+                        totalCategories: data.totalCategories,
+                        totalSuppliers: data.totalSuppliers
                     });
 
                     setRecentUsers(data.recentUsers);
                     setRecentItems(data.recentItems);
                     setRecentCategories(data.recentCategories);
+                    setRecentSuppliers(data.recentSuppliers);
                 }).catch(error => console.error(error))
         };
 
@@ -157,10 +138,11 @@ const Dashboard = () => {
         <div>
             <h1 className={`font-bold mb-6 page-heading`}>Dashboard Overview</h1>
 
-            <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8`}>
+            <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8`}>
                 <MetricCard title={`Total Items`} data={metrics.totalItems}/>
                 <MetricCard title={`Total Categories`} data={metrics.totalCategories}/>
                 <MetricCard title={`Total Users`} data={metrics.totalUsers}/>
+                <MetricCard title={`Total Suppliers`} data={metrics.totalSuppliers}/>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
@@ -176,9 +158,7 @@ const Dashboard = () => {
                     title={`Recent Categories`}
                     data=
                         {recentCategories.map(category => (
-                            <li key={category._id} className="bg-gray-100 p-3 rounded-md">
-                                {category.name}
-                            </li>
+                            <li key={category._id} className="bg-gray-100 p-3 rounded-md">{category.name}</li>
                         ))}
                 />
 
@@ -186,9 +166,15 @@ const Dashboard = () => {
                     title={`Recent Users`}
                     data=
                         {recentUsers.map(user => (
-                            <li key={user._id} className="bg-gray-100 p-3 rounded-md">
-                                {user.name}
-                            </li>
+                            <li key={user._id} className="bg-gray-100 p-3 rounded-md">{user.name}</li>
+                        ))}
+                />
+
+                <RecentCard
+                    title={`Recent Suppliers`}
+                    data=
+                        {recentSuppliers.map(supplier => (
+                            <li key={supplier._id} className="bg-gray-100 p-3 rounded-md">{supplier.name}</li>
                         ))}
                 />
             </div>

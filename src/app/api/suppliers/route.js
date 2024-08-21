@@ -13,7 +13,9 @@ export const GET = async (request) => {
         await connectToDB();
         const suppliers = await Supplier.find({
             $or: [
-                { name: new RegExp(query, "i") }
+                { name: new RegExp(query, "i") },
+                { phone: new RegExp(query, "i") },
+                { address: new RegExp(query, "i") }
             ]
         })
             .populate('addedBy', 'name')

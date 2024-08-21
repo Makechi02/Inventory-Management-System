@@ -1,6 +1,8 @@
 import {connectToDB} from "@/utils/database";
 import Category from "@/models/category";
 import {getCorsHeaders} from "@/app/api/options";
+import {validateCategory} from "@/utils/validation";
+import {sanitizeCategory} from "@/utils/sanitization";
 
 export const GET = async (request) => {
     const origin = request.headers.get('origin');
@@ -30,10 +32,16 @@ export const POST = async (request) => {
     const headers = getCorsHeaders(origin);
     const { name, createdBy, updatedBy } = await request.json();
 
+    const errors = validateCategory({ name, createdBy, updatedBy });
+    if (errors.length > 0) {
+        return new Response(JSON.stringify({ errors }), { status: 400, headers });
+    }
+
+    const sanitizedCategory = sanitizeCategory({ name, createdBy, updatedBy });
+
     try {
         await connectToDB();
-        const newCategory = new Category({ name, createdBy, updatedBy });
-
+        const newCategory = new Category(sanitizedCategory);
         await newCategory.save();
 
         return new Response(JSON.stringify(newCategory), { status: 201, headers });
