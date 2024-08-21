@@ -1,19 +1,21 @@
+import {FaBook, FaClock, FaLaptop} from "react-icons/fa";
+
 const Benefits = () => {
     const benefits = [
         {
             title: 'Real-Time Tracking',
             description: 'Monitor your inventory levels in real-time to prevent stockouts and overstocking.',
-            icon: '/path/to/real-time-tracking-icon.svg',
+            icon: <FaClock/>,
         },
         {
             title: 'Automated Reporting',
             description: 'Generate detailed reports automatically, saving time and reducing errors.',
-            icon: '/path/to/automated-reporting-icon.svg',
+            icon: <FaBook/>,
         },
         {
             title: 'User-Friendly Interface',
             description: 'Easily navigate through the system with an intuitive and user-friendly interface.',
-            icon: '/path/to/user-friendly-icon.svg',
+            icon: <FaLaptop/>,
         },
     ];
 
@@ -24,8 +26,8 @@ const Benefits = () => {
                 <div className="mt-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
                     {benefits.map((benefit, index) => (
                         <div key={index} className="text-center">
-                            <div className="flex items-center justify-center h-12 w-12 rounded-full bg-indigo-600 mb-4">
-                                <img src={benefit.icon} alt={`${benefit.title} icon`} className="h-6 w-6 text-white"/>
+                            <div className={`flex items-center justify-center h-12 w-12 rounded-full bg-indigo-600 mb-4 text-white text-2xl`}>
+                                {benefit.icon}
                             </div>
                             <h3 className="text-xl font-semibold text-gray-900">{benefit.title}</h3>
                             <p className="mt-2 text-gray-600">{benefit.description}</p>
