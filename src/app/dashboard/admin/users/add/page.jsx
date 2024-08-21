@@ -39,6 +39,8 @@ const Page = () => {
                 const response = error?.response;
                 if (response.status === 409) {
                     setErrorMessage(response.data.message);
+                } else if (response.status === 400) {
+                    setErrorMessage(response.data.errors.join(". "));
                 } else {
                     console.error(error?.response);
                 }
@@ -64,7 +66,11 @@ const Page = () => {
 
                 <div className={`mt-4`}>
                     <form className={`flex flex-col gap-2`} onSubmit={handleAddUser}>
-                        <p className={`text-red-500`}>{errorMessage && errorMessage}</p>
+                        {errorMessage && (
+                            <div className="bg-red-100 text-red-800 p-4 rounded-lg mb-4">
+                                <p>{errorMessage}</p>
+                            </div>
+                        )}
 
                         <div className={`grid sm:grid-cols-2 gap-4`}>
                             <div className={`input-box`}>
@@ -104,7 +110,7 @@ const Page = () => {
                                 </select>
                             </div>
                         </div>
-                            <button className={`add-btn w-fit mt-4`} type={`submit`}>Add</button>
+                            <button className={`dashboard-submit-btn`} type={`submit`}>Add User</button>
                     </form>
                 </div>
             </div>

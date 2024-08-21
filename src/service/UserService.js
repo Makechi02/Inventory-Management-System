@@ -11,6 +11,14 @@ export const UserAuthService = {
             }
         });
     },
+
+    updateUserPassword: (data) => {
+        return axios.post(`${USERS_AUTH_API_BASE_URL}/update-password`, data, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+    }
 }
 
 export const UserService = {

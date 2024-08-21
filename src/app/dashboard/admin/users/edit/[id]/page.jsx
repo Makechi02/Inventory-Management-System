@@ -82,7 +82,11 @@ const Page = ({params}) => {
                 <div className={`mt-4`}>
                     {user.name ? (
                         <form className={`flex flex-col gap-3`} onSubmit={handleEditUser}>
-                            <p className={`text-red-500`}>{errorMessage && errorMessage}</p>
+                            {errorMessage && (
+                                <div className="bg-red-100 text-red-800 p-4 rounded-lg mb-4">
+                                    <p>{errorMessage}</p>
+                                </div>
+                            )}
 
                             <div className={`grid sm:grid-cols-2 gap-4`}>
                                 <div className={`input-box`}>
@@ -116,13 +120,13 @@ const Page = ({params}) => {
                                         className={`dashboard-input`}
                                     >
                                         <option>-- select role --</option>
-                                        <option value={'USER'}>User</option>
-                                        <option value={'ADMIN'}>Admin</option>
+                                        <option value={'USER'}>USER</option>
+                                        <option value={'ADMIN'}>ADMIN</option>
                                     </select>
                                 </div>
                             </div>
 
-                                <button className={`add-btn w-fit mt-4`} type={`submit`}>Save</button>
+                                <button className={`dashboard-submit-btn`} type={`submit`}>Save Changes</button>
                         </form>
                         ) : (
                         <p>Loading...</p>

@@ -26,3 +26,15 @@ export const validateCategory = (category) => {
 
     return errors;
 };
+
+export const validateUser = (user) => {
+    const errors = [];
+
+    if (!user.name || typeof user.name !== 'string') errors.push('User name is required and must be a string.');
+    if (!user.email || typeof user.email !== 'string') errors.push('User email is required and must be a string.');
+    if (!user.role || typeof user.role !== 'string') errors.push('User role is required and must be a string.');
+
+    if (user.role !== 'ADMIN' && user.role !== 'USER') errors.push('You entered wrong user role');
+
+    return errors;
+};

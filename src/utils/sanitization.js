@@ -19,3 +19,13 @@ export const sanitizeCategory = (category) => {
         updatedBy: category.updatedBy
     };
 };
+
+export const sanitizeUser = (user) => {
+    return {
+        name: user.name.trim(),
+        email: user.email.trim(),
+        role: user.role.trim(),
+        password: user.hashedPassword.trim()
+    };
+};
+
