@@ -56,6 +56,24 @@ const Login = () => {
         setErrorMessage('');
     }, [email, password]);
 
+    useEffect(() => {
+        const fetchSession = async () => {
+            const response = await fetch("/api/auth/session");
+            return response.json();
+        };
+
+        fetchSession().then(response => {
+            const session = response;
+            if (session.user) {
+                const role = session.user.role;
+                if (role === 'USER')
+                    router.push("/dashboard/user");
+                else if (role === 'ADMIN')
+                    router.push("/dashboard/admin");
+            }
+        });
+    }, []);
+
     return (
         <section className={`h-full p-4 flex items-center justify-center`}>
             <div className={`flex flex-col gap-6 w-[90%] md:w-[60%]`}>
