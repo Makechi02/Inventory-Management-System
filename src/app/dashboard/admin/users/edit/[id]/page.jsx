@@ -1,11 +1,10 @@
 "use client"
 
-import Link from "next/link";
-import {FaChevronLeft} from "react-icons/fa";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import {UserService} from "@/service/UserService";
 import {showSuccessDialog} from "@/utils/sweetalertUtil";
+import BackBtn from "@/components/ui/dashboard/BackBtn";
 
 const Page = ({params}) => {
     const [user, setUser] = useState({});
@@ -68,13 +67,7 @@ const Page = ({params}) => {
 
     return (
         <section className={`md:px-[10%]`}>
-            <Link
-                href={`/dashboard/admin/users`}
-                className={`bg-black text-gray-100 p-2 rounded-lg flex items-center gap-2 w-fit`}
-            >
-                <FaChevronLeft/>
-                Back
-            </Link>
+            <BackBtn/>
 
             <div className={`bg-white p-4 sm:p-8 rounded-lg mt-4 shadow-lg`}>
                 <h1 className={`page-heading`}>Edit User</h1>
