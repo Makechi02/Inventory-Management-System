@@ -118,9 +118,6 @@ const Login = () => {
                 </form>
 
                 <div className={`flex justify-between`}>
-                    <Link href={`/accounts/register`} className={`text-sm text-gray-700 underline`}>
-                        Create an account?
-                    </Link>
                     <Link href={`/accounts/forgot-password`} className={`text-sm text-gray-700 underline`}>
                         Forgot password?
                     </Link>
