@@ -1,36 +1,31 @@
 "use client"
 
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {useRouter} from "next/navigation";
 import SupplierService from "@/service/SupplierService";
-import {showSuccessDialog} from "@/utils/sweetalertUtil";
+import {toast} from "react-toastify";
 
 const AddSupplierForm = ({userID}) => {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [address, setAddress] = useState("");
-    const [errorMessage, setErrorMessage] = useState('');
     const router = useRouter();
-
-    useEffect(() => {
-        setErrorMessage("");
-    }, [name, phone, address]);
 
     const handleAddSupplier = async (e) => {
         e.preventDefault();
 
         if (name === '') {
-            setErrorMessage("Supplier name is blank");
+            toast.error("Supplier name is blank");
             return;
         }
 
         if (phone === '') {
-            setErrorMessage("Supplier contact is blank");
+            toast.error("Supplier contact is blank");
             return;
         }
 
         if (address === '') {
-            setErrorMessage("Supplier address is blank");
+            toast.error("Supplier address is blank");
             return;
         }
 
@@ -38,7 +33,8 @@ const AddSupplierForm = ({userID}) => {
             const newSupplier = {name, phone, address, addedBy: userID, updatedBy: userID};
             const response = await SupplierService.addSupplier(newSupplier);
             if (response.status === 201) {
-                showSuccessDialog('New Supplier added successfully', () => router.back());
+                toast.success('New Supplier added successfully');
+                router.back();
             }
         } catch (e) {
             console.error(e);
@@ -47,7 +43,6 @@ const AddSupplierForm = ({userID}) => {
 
     return (
         <form className={`flex flex-col gap-2`} onSubmit={handleAddSupplier}>
-            <p className={`text-red-500`}>{errorMessage && errorMessage}</p>
             <div className={`grid sm:grid-cols-2 gap-4`}>
                 <div className={`input-box`}>
                     <label htmlFor={`name`} className={`dashboard-label`}>Name:</label>
@@ -89,7 +84,7 @@ const AddSupplierForm = ({userID}) => {
                 </div>
             </div>
 
-            <button className={`add-btn w-fit mt-4`} type={`submit`}>Add</button>
+            <button className={`dashboard-submit-btn`} type={`submit`}>Add Supplier</button>
         </form>
     )
 }

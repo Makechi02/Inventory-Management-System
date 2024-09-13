@@ -6,14 +6,16 @@ import Link from "next/link";
 import {useEffect, useState} from "react";
 import {SupplierCard} from "@/components/ui/dashboard/admin/TableCards";
 import SearchForm from "@/components/ui/dashboard/admin/SearchForm";
-import {useSearchParams} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import SupplierService from "@/service/SupplierService";
-import {showConfirmDialog, showSuccessDialog} from "@/utils/sweetalertUtil";
+import {showConfirmDialog} from "@/utils/sweetalertUtil";
+import {toast} from "react-toastify";
 
 const Page = () => {
     const [suppliers, setSuppliers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
     const searchParams = useSearchParams();
     const query = searchParams.get("query");
@@ -29,7 +31,8 @@ const Page = () => {
         SupplierService.deleteSupplier(supplier._id)
             .then(response => {
                 if (response.status === 200) {
-                    showSuccessDialog('Supplier deleted successfully', () => window.location.reload());
+                    toast.success('Supplier deleted successfully');
+                    router.refresh();
                 }
             })
             .catch(error => console.error(error));

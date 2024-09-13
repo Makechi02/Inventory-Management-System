@@ -4,7 +4,7 @@ import {FaEye, FaFilter, FaPen} from 'react-icons/fa';
 import {FaTrashCan} from 'react-icons/fa6';
 import Link from 'next/link';
 import {useEffect, useState} from 'react';
-import {useSearchParams} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import ItemService from '@/service/ItemService';
 import {ItemCard} from '@/components/ui/dashboard/admin/TableCards';
 import SearchForm from '@/components/ui/dashboard/admin/SearchForm';
@@ -12,7 +12,8 @@ import FiltersModal from '@/components/ui/dashboard/admin/FiltersModal';
 import CategoryService from '@/service/CategoryService';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Pagination from "@/components/ui/dashboard/admin/items/Pagination";
-import {showConfirmDialog, showSuccessDialog} from "@/utils/sweetalertUtil";
+import {showConfirmDialog} from "@/utils/sweetalertUtil";
+import {toast} from "react-toastify";
 
 const Page = () => {
     const [items, setItems] = useState([]);
@@ -22,6 +23,8 @@ const Page = () => {
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
+
+    const router = useRouter();
 
     const toggleFiltersVisibility = () => {
         setIsFiltersVisible(prevState => !prevState);
@@ -44,7 +47,8 @@ const Page = () => {
         ItemService.deleteItem(item._id)
             .then(response => {
                 if (response.status === 200) {
-                    showSuccessDialog('Item deleted successfully', () => window.location.reload());
+                    toast.success('Item deleted successfully');
+                    router.refresh();
                 }
             })
             .catch(error => console.error(error));
@@ -52,7 +56,7 @@ const Page = () => {
 
     const fetchAllItems = () => {
         setLoading(true);
-        ItemService.getAllItems({ query, category, minPrice, maxPrice, page, limit })
+        ItemService.getAllItems({query, category, minPrice, maxPrice, page, limit})
             .then(response => {
                 setItems(response.data.items);
                 setPage(response.data.pagination.page);
@@ -79,7 +83,12 @@ const Page = () => {
 
     return (
         <div>
-            <FiltersModal categories={categories} isVisible={isFiltersVisible} toggleVisibility={toggleFiltersVisibility} />
+            <FiltersModal
+                categories={categories}
+                isVisible={isFiltersVisible}
+                toggleVisibility={toggleFiltersVisibility}
+            />
+
             <div className="bg-white p-4 rounded-lg shadow-lg">
                 <h1 className="page-heading">Items</h1>
 
@@ -93,22 +102,23 @@ const Page = () => {
                         title="Apply filters"
                         className="flex gap-2 items-center bg-blue-600 hover:bg-blue-900 p-2 rounded-lg text-gray-100"
                     >
-                        <FaFilter />
+                        <FaFilter/>
                         Filters
                     </button>
-                    <SearchForm />
+                    <SearchForm/>
                 </div>
 
                 <div className="mt-8">
                     {loading ? (
-                        <LoadingSpinner />
+                        <LoadingSpinner/>
                     ) : (
                         <>
-                            <ItemsTable items={items} handleDelete={handleDelete} />
-                            <Pagination
-                                currentPage={page}
+                            <ItemsTable
+                                items={items}
+                                handleDelete={handleDelete}
+                                page={page}
                                 totalPages={totalPages}
-                                onPageChange={setPage}
+                                setPage={setPage}
                             />
                         </>
                     )}
@@ -118,12 +128,12 @@ const Page = () => {
     );
 };
 
-const ItemsTable = ({ items, handleDelete }) => {
+const ItemsTable = ({items, handleDelete, page, totalPages, setPage}) => {
     return (
         items.length === 0 ? (
             <p className="text-center">No Items found</p>
         ) : (
-            <>
+            <div>
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200 hidden sm:table">
                         <thead className="bg-gray-50">
@@ -157,21 +167,21 @@ const ItemsTable = ({ items, handleDelete }) => {
                                         className="edit-btn"
                                         href={`/dashboard/admin/items/${item._id}`}
                                     >
-                                        <FaEye />
+                                        <FaEye/>
                                     </Link>
                                     <Link
                                         title="Edit"
                                         className="edit-btn ml-3"
                                         href={`/dashboard/admin/items/edit/${item._id}`}
                                     >
-                                        <FaPen />
+                                        <FaPen/>
                                     </Link>
                                     <button
                                         title="Delete"
                                         className="ml-3 delete-btn"
                                         onClick={() => handleDelete(item)}
                                     >
-                                        <FaTrashCan />
+                                        <FaTrashCan/>
                                     </button>
                                 </td>
                             </tr>
@@ -182,10 +192,16 @@ const ItemsTable = ({ items, handleDelete }) => {
 
                 {items.map((item, index) => (
                     <div key={index} className="sm:hidden">
-                        <ItemCard item={item} handleDelete={handleDelete} />
+                        <ItemCard item={item} handleDelete={handleDelete}/>
                     </div>
                 ))}
-            </>
+
+                <Pagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={setPage}
+                />
+            </div>
         ));
 };
 

@@ -7,10 +7,11 @@ import {useEffect, useState} from "react";
 import CategoryService from "@/service/CategoryService";
 import {CategoryCard} from "@/components/ui/dashboard/admin/TableCards";
 import SearchForm from "@/components/ui/dashboard/admin/SearchForm";
-import {useSearchParams} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import DateUtil from "@/utils/dateUtil";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import {showConfirmDialog, showSuccessDialog} from "@/utils/sweetalertUtil";
+import {showConfirmDialog} from "@/utils/sweetalertUtil";
+import {toast} from "react-toastify";
 
 const Page = () => {
     const [categories, setCategories] = useState([]);
@@ -18,6 +19,8 @@ const Page = () => {
 
     const searchParams = useSearchParams();
     const query = searchParams.get("query");
+
+    const router = useRouter();
 
     const handleDelete = (category) => {
         showConfirmDialog(
@@ -30,8 +33,10 @@ const Page = () => {
     const deleteCategory = (category) => {
         CategoryService.deleteCategory(category._id)
             .then(response => {
-                if (response.status === 200)
-                    showSuccessDialog('Category deleted successfully', () => window.location.reload());
+                if (response.status === 200) {
+                    toast.success('Category deleted successfully');
+                    router.refresh();
+                }
             })
             .catch(error => console.error(error));
     }

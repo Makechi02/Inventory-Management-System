@@ -3,8 +3,8 @@
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import {UserService} from "@/service/UserService";
-import {showSuccessDialog} from "@/utils/sweetalertUtil";
 import BackBtn from "@/components/ui/dashboard/BackBtn";
+import {toast} from "react-toastify";
 
 const Page = ({params}) => {
     const [user, setUser] = useState({});
@@ -12,24 +12,23 @@ const Page = ({params}) => {
     const [name, setName] = useState(user.name);
     const [email, setEmail] = useState(user.email);
     const [role, setRole] = useState(user.role);
-    const [errorMessage, setErrorMessage] = useState('');
     const router = useRouter();
 
     const handleEditUser = async (e) => {
         e.preventDefault();
 
         if (name === '') {
-            setErrorMessage("Name is blank");
+            toast.error("Name is blank");
             return;
         }
 
         if (email === '') {
-            setErrorMessage("Email is blank");
+            toast.error("Email is blank");
             return;
         }
 
         if (!role || role === "-- select role --") {
-            setErrorMessage("Please select a role");
+            toast.error("Please select a role");
             return;
         }
 
@@ -38,7 +37,8 @@ const Page = ({params}) => {
             const response = await UserService.updateUser(user._id, updatedUser);
 
             if (response.status === 200) {
-                showSuccessDialog('User updated successfully', () => router.back());
+                toast.success('User updated successfully');
+                router.back();
             }
         } catch (e) {
             console.error(e);
@@ -61,10 +61,6 @@ const Page = ({params}) => {
         setRole(user.role);
     }, [user]);
 
-    useEffect(() => {
-        setErrorMessage("");
-    }, [name, email, role]);
-
     return (
         <section className={`md:px-[10%]`}>
             <BackBtn/>
@@ -75,12 +71,6 @@ const Page = ({params}) => {
                 <div className={`mt-4`}>
                     {user.name ? (
                         <form className={`flex flex-col gap-3`} onSubmit={handleEditUser}>
-                            {errorMessage && (
-                                <div className="bg-red-100 text-red-800 p-4 rounded-lg mb-4">
-                                    <p>{errorMessage}</p>
-                                </div>
-                            )}
-
                             <div className={`grid sm:grid-cols-2 gap-4`}>
                                 <div className={`input-box`}>
                                     <label htmlFor={`name`} className={`dashboard-label`}>Name:</label>
@@ -88,6 +78,7 @@ const Page = ({params}) => {
                                         type={`text`}
                                         id={`name`}
                                         value={name}
+                                        autoComplete={`off`}
                                         onChange={event => setName(event.target.value)}
                                         className={`dashboard-input`}
                                     />
@@ -99,6 +90,7 @@ const Page = ({params}) => {
                                         type={`text`}
                                         id={`brand`}
                                         value={email}
+                                        autoComplete={`off`}
                                         onChange={event => setEmail(event.target.value)}
                                         className={`dashboard-input`}
                                     />

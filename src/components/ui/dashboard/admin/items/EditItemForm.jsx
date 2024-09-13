@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import CategoryService from "@/service/CategoryService";
 import SupplierService from "@/service/SupplierService";
-import {showSuccessDialog} from "@/utils/sweetalertUtil";
+import {toast} from "react-toastify";
 
 const EditItemForm = ({itemID, userID}) => {
     const [item, setItem] = useState({});
@@ -16,7 +16,6 @@ const EditItemForm = ({itemID, userID}) => {
     const [price, setPrice] = useState('');
     const [category, setCategory] = useState('');
     const [supplier, setSupplier] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
     const [categories, setCategories] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
     const router = useRouter();
@@ -63,47 +62,43 @@ const EditItemForm = ({itemID, userID}) => {
         fetchItemByID();
     }, [itemID]);
 
-    useEffect(() => {
-        setErrorMessage("");
-    }, [name, brand, model, quantity, price, category, supplier]);
-
     const handleEditItem = async (e) => {
         e.preventDefault();
 
         if (!name.trim()) {
-            setErrorMessage("Item name is required");
+            toast.error("Item name is required");
             return;
         }
 
         if (!brand.trim()) {
-            setErrorMessage("Item brand is required");
+            toast.error("Item brand is required");
             return;
         }
 
         if (!model.trim()) {
-            setErrorMessage("Model is required");
+            toast.error("Model is required");
             return;
         }
 
         const numericQuantity = parseFloat(quantity);
         if (isNaN(numericQuantity) || numericQuantity <= 0) {
-            setErrorMessage("Quantity must be a positive number");
+            toast.error("Quantity must be a positive number");
             return;
         }
 
         const numericPrice = parseFloat(price);
         if (isNaN(numericPrice) || numericPrice <= 0) {
-            setErrorMessage("Price must be a positive number");
+            toast.error("Price must be a positive number");
             return;
         }
 
         if (!category || category === "-- select category --") {
-            setErrorMessage("Please choose a category");
+            toast.error("Please choose a category");
             return;
         }
 
         if (!supplier || supplier === "-- select supplier --") {
-            setErrorMessage("Please choose a supplier");
+            toast.error("Please choose a supplier");
             return;
         }
 
@@ -121,22 +116,17 @@ const EditItemForm = ({itemID, userID}) => {
             const response = await ItemService.updateItem(item._id, updatedItem);
 
             if (response.status === 200) {
-                showSuccessDialog('Item updated successfully', () => router.back());
+                toast.success('Item updated successfully');
+                router.back();
             }
         } catch (e) {
             console.error(e);
-            setErrorMessage("Failed to update item");
+            toast.error("Failed to update item");
         }
     };
 
     return (
         <form className={`space-y-6`} onSubmit={handleEditItem}>
-            {errorMessage && (
-                <div className="bg-red-100 text-red-800 p-4 rounded-lg">
-                    <p>{errorMessage}</p>
-                </div>
-            )}
-
             <div className={`grid sm:grid-cols-2 gap-4`}>
                 <div className={`input-box`}>
                     <label htmlFor={`name`} className={`dashboard-label`}>Name:</label>

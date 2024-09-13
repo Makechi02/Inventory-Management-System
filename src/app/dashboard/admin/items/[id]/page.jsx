@@ -8,8 +8,9 @@ import DateUtil from "@/utils/dateUtil";
 import {FaTrashCan} from "react-icons/fa6";
 import BackBtn from "@/components/ui/dashboard/BackBtn";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import {showConfirmDialog, showSuccessDialog} from "@/utils/sweetalertUtil";
+import {showConfirmDialog} from "@/utils/sweetalertUtil";
 import {useRouter} from "next/navigation";
+import {toast} from "react-toastify";
 
 const Page = ({params}) => {
     const [item, setItem] = useState({});
@@ -26,10 +27,8 @@ const Page = ({params}) => {
         ItemService.deleteItem(item._id)
             .then(response => {
                 if (response.status === 200) {
-                    showSuccessDialog(
-                        'Item deleted successfully',
-                        () => router.push("/dashboard/admin/items")
-                    );
+                    toast.success('Item deleted successfully');
+                    router.push("/dashboard/admin/items");
                 }
             })
             .catch(error => console.error(error));

@@ -1,5 +1,7 @@
 import "@/styles/globals.css";
 import {figtree, gfs_didot} from "@/app/font";
+import {ToastContainer, Zoom} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata = {
 	title: "IMS",
@@ -12,6 +14,7 @@ export default function RootLayout({children}) {
 		<body>
 		<main>
 			{children}
+			<ToastContainer transition={Zoom}/>
 		</main>
 		</body>
 		</html>

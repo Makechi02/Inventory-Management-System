@@ -7,11 +7,14 @@ import DateUtil from "@/utils/dateUtil";
 import {FaTrashCan} from "react-icons/fa6";
 import BackBtn from "@/components/ui/dashboard/BackBtn";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import {showConfirmDialog, showSuccessDialog} from "@/utils/sweetalertUtil";
+import {showConfirmDialog} from "@/utils/sweetalertUtil";
 import SupplierService from "@/service/SupplierService";
+import {toast} from "react-toastify";
+import {useRouter} from "next/navigation";
 
 const Page = ({params}) => {
     const [supplier, setSupplier] = useState({});
+    const router = useRouter();
 
     const handleDelete = (supplier) => {
         showConfirmDialog(
@@ -24,7 +27,8 @@ const Page = ({params}) => {
         SupplierService.deleteSupplier(supplier._id)
             .then(response => {
                 if (response.status === 200) {
-                    showSuccessDialog('Supplier deleted successfully', () => window.location.reload());
+                    toast.success('Supplier deleted successfully');
+                    router.refresh();
                 }
             })
             .catch(error => console.error(error));

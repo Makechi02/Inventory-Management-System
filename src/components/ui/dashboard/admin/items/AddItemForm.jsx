@@ -5,7 +5,7 @@ import {useRouter} from "next/navigation";
 import ItemService from "@/service/ItemService";
 import CategoryService from "@/service/CategoryService";
 import SupplierService from "@/service/SupplierService";
-import {showSuccessDialog} from "@/utils/sweetalertUtil";
+import {toast} from "react-toastify";
 
 const AddItemForm = ({userID}) => {
     const [name, setName] = useState("");
@@ -15,7 +15,6 @@ const AddItemForm = ({userID}) => {
     const [price, setPrice] = useState("");
     const [category, setCategory] = useState("");
     const [supplier, setSupplier] = useState("");
-    const [errorMessage, setErrorMessage] = useState('');
     const [categories, setCategories] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
 
@@ -25,39 +24,39 @@ const AddItemForm = ({userID}) => {
         e.preventDefault();
 
         if (!name.trim()) {
-            setErrorMessage("Item name is required");
+            toast.error("Item name is required");
             return;
         }
 
         if (!brand.trim()) {
-            setErrorMessage("Item brand is required");
+            toast.error("Item brand is required");
             return;
         }
 
         if (!model.trim()) {
-            setErrorMessage("Model is required");
+            toast.error("Model is required");
             return;
         }
 
         const numericQuantity = parseFloat(quantity);
         if (isNaN(numericQuantity) || numericQuantity <= 0) {
-            setErrorMessage("Quantity must be a positive number");
+            toast.error("Quantity must be a positive number");
             return;
         }
 
         const numericPrice = parseFloat(price);
         if (isNaN(numericPrice) || numericPrice <= 0) {
-            setErrorMessage("Price must be a positive number");
+            toast.error("Price must be a positive number");
             return;
         }
 
         if (!category || category === "-- select category --") {
-            setErrorMessage("Please choose a category");
+            toast.error("Please choose a category");
             return;
         }
 
         if (!supplier || supplier === "-- select supplier --") {
-            setErrorMessage("Please choose a supplier");
+            toast.error("Please choose a supplier");
             return;
         }
 
@@ -66,11 +65,12 @@ const AddItemForm = ({userID}) => {
             const response = await ItemService.addItem(newItem);
 
             if (response.status === 201) {
-                showSuccessDialog('New Item added successfully', () => router.back());
+                toast.success('New Item added successfully');
+                router.back();
             }
         } catch (e) {
             console.error(e);
-            setErrorMessage("Failed to add the item. Please try again.");
+            toast.error("Failed to create the item. Please try again.");
         }
     };
 
@@ -97,18 +97,8 @@ const AddItemForm = ({userID}) => {
         fetchAllSuppliers();
     }, []);
 
-    useEffect(() => {
-        setErrorMessage("");
-    }, [name, brand, model, quantity, price, category, supplier]);
-
     return (
         <form className={`space-y-6`} onSubmit={handleAddItem}>
-            {errorMessage && (
-                <div className="bg-red-100 text-red-800 p-4 rounded-lg">
-                    <p>{errorMessage}</p>
-                </div>
-            )}
-
             <div className={`grid grid-cols-1 sm:grid-cols-2 gap-6`}>
                 <div className={`input-box`}>
                     <label htmlFor={`name`} className={`dashboard-label`}>Name:</label>

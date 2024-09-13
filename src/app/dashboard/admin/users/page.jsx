@@ -8,15 +8,17 @@ import {UserCard} from "@/components/ui/dashboard/admin/TableCards";
 import {UserService} from "@/service/UserService";
 import DateUtil from "@/utils/dateUtil";
 import SearchForm from "@/components/ui/dashboard/admin/SearchForm";
-import {useSearchParams} from "next/navigation";
-import {showConfirmDialog, showSuccessDialog} from "@/utils/sweetalertUtil";
+import {useRouter, useSearchParams} from "next/navigation";
+import {showConfirmDialog} from "@/utils/sweetalertUtil";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import {toast} from "react-toastify";
 
 const Page = () => {
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState([]);
     const searchParams = useSearchParams();
     const query = searchParams.get("query");
+    const router = useRouter();
 
     const handleDelete = (user) => {
         showConfirmDialog(
@@ -29,7 +31,8 @@ const Page = () => {
         UserService.deleteUser(user._id)
             .then(response => {
                 if (response.status === 200) {
-                    showSuccessDialog('User deleted successfully', () => window.location.reload());
+                    toast.success('User deleted successfully');
+                    router.refresh();
                 }
             })
             .catch(error => console.error(error));
@@ -66,9 +69,9 @@ const Page = () => {
 
             <div className={`mt-8`}>
                 {loading ? (
-                    <LoadingSpinner />
+                    <LoadingSpinner/>
                 ) : (
-                    <UsersTable users={users} handleDelete={handleDelete} />
+                    <UsersTable users={users} handleDelete={handleDelete}/>
                 )}
             </div>
         </div>

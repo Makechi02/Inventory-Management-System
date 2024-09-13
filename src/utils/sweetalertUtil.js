@@ -14,8 +14,3 @@ export const showConfirmDialog = (message, action) => {
         }
     });
 }
-
-export const showSuccessDialog = (message, action) => {
-    Swal.fire(message, "", "success")
-        .then(() => action());
-}

@@ -3,19 +3,18 @@
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import CategoryService from "@/service/CategoryService";
-import {showSuccessDialog} from "@/utils/sweetalertUtil";
+import {toast} from "react-toastify";
 
 const EditCategoryForm = ({categoryID, userID}) => {
     const [category, setCategory] = useState({});
     const [name, setName] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
     const router = useRouter();
 
     const handleEditCategory = (e) => {
         e.preventDefault();
 
         if (name === '') {
-            setErrorMessage("Category name is required");
+            toast.error("Category name is required");
             return;
         }
 
@@ -28,7 +27,8 @@ const EditCategoryForm = ({categoryID, userID}) => {
         CategoryService.updateCategory(categoryID, data)
             .then(response => {
                 if (response.status === 200) {
-                    showSuccessDialog('Category updated successfully', () => router.back());
+                    toast.success('Category updated successfully');
+                    router.back();
                 }
             });
     }
@@ -47,19 +47,9 @@ const EditCategoryForm = ({categoryID, userID}) => {
         setName(category.name);
     }, [category]);
 
-    useEffect(() => {
-        setErrorMessage("");
-    }, [name]);
-
     return (
         category.name ? (
             <form className={`flex flex-col gap-2`} onSubmit={handleEditCategory}>
-                {errorMessage && (
-                    <div className="bg-red-100 text-red-800 p-4 rounded-lg">
-                        <p>{errorMessage}</p>
-                    </div>
-                )}
-
                 <label htmlFor={`name`} className={`dashboard-label`}>Name:</label>
                 <input
                     type={`text`}
@@ -70,7 +60,7 @@ const EditCategoryForm = ({categoryID, userID}) => {
                     className={`dashboard-input`}
                     onChange={event => setName(event.target.value)}
                 />
-                <button className={`add-btn w-fit mt-4`} type={`submit`}>Save</button>
+                <button className={`dashboard-submit-btn w-fit mt-4`} type={`submit`}>Update Category</button>
             </form>
         ) : (
             <p>Loading...</p>
