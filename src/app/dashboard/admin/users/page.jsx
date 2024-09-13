@@ -10,8 +10,10 @@ import DateUtil from "@/utils/dateUtil";
 import SearchForm from "@/components/ui/dashboard/admin/SearchForm";
 import {useSearchParams} from "next/navigation";
 import {showConfirmDialog, showSuccessDialog} from "@/utils/sweetalertUtil";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 const Page = () => {
+    const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState([]);
     const searchParams = useSearchParams();
     const query = searchParams.get("query");
@@ -34,10 +36,17 @@ const Page = () => {
     }
 
     useEffect(() => {
+        setLoading(true);
         const fetchUsers = () => {
             UserService.getAllUsers({query})
-                .then(response => setUsers(response.data))
-                .catch(error => console.error(error));
+                .then(response => {
+                    setUsers(response.data);
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.error(error);
+                    setLoading(false);
+                });
         };
 
         fetchUsers();
@@ -56,65 +65,75 @@ const Page = () => {
             </div>
 
             <div className={`mt-8`}>
-                {users.length === 0 ? (
-                    <div>
-                        <p className={`text-center`}>No users found</p>
-                    </div>
+                {loading ? (
+                    <LoadingSpinner />
                 ) : (
-                    <>
-                        <div className={`overflow-x-auto`}>
-                            <table className={`min-w-full divide-y divide-gray-200 hidden sm:table`}>
-                                <thead className={`bg-gray-50`}>
-                                <tr>
-                                    <th scope={`col`} className={`table-heading`}>S/No</th>
-                                    <th scope={`col`} className={`table-heading`}>Name</th>
-                                    <th scope={`col`} className={`table-heading`}>Email</th>
-                                    <th scope={`col`} className={`table-heading`}>Role</th>
-                                    <th scope={`col`} className={`table-heading`}>Added at</th>
-                                    <th scope={`col`} className={`table-heading`}>Updated at</th>
-                                    <th scope={`col`} className={`table-heading`}>Actions</th>
-                                </tr>
-                                </thead>
-
-                                <tbody className={`bg-white divide-y divide-gray-200`}>
-                                {users?.map((user, index) => (
-                                    <tr key={user._id}>
-                                        <td className={`table-data`}>{index + 1}</td>
-                                        <td className={`table-data`}>{user.name}</td>
-                                        <td className={`table-data`}>{user.email}</td>
-                                        <td className={`table-data`}>{user.role}</td>
-                                        <td className={`table-data`}>{DateUtil.formatDate(user.createdAt)}</td>
-                                        <td className={`table-data`}>{DateUtil.formatDate(user.updatedAt)}</td>
-                                        <td className={`table-data flex`}>
-                                            <Link
-                                                title={`Edit`}
-                                                className={`edit-btn`}
-                                                href={`/dashboard/admin/users/edit/${user._id}`}
-                                            >
-                                                <FaPen/>
-                                            </Link>
-                                            <button
-                                                className={`ml-3 delete-btn`} title={`Delete`}
-                                                onClick={() => handleDelete(user)}
-                                            >
-                                                <FaTrashCan/>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {users.map((user, index) => (
-                            <div key={index} className={`sm:hidden`}>
-                                <UserCard user={user} handleDelete={handleDelete}/>
-                            </div>
-                        ))}
-                    </>
+                    <UsersTable users={users} handleDelete={handleDelete} />
                 )}
             </div>
         </div>
+    )
+}
+
+const UsersTable = ({users, handleDelete}) => {
+    return (
+        users.length === 0 ? (
+            <div>
+                <p className={`text-center`}>No users found</p>
+            </div>
+        ) : (
+            <>
+                <div className={`overflow-x-auto`}>
+                    <table className={`min-w-full divide-y divide-gray-200 hidden sm:table`}>
+                        <thead className={`bg-gray-50`}>
+                        <tr>
+                            <th scope={`col`} className={`table-heading`}>S/No</th>
+                            <th scope={`col`} className={`table-heading`}>Name</th>
+                            <th scope={`col`} className={`table-heading`}>Email</th>
+                            <th scope={`col`} className={`table-heading`}>Role</th>
+                            <th scope={`col`} className={`table-heading`}>Added at</th>
+                            <th scope={`col`} className={`table-heading`}>Updated at</th>
+                            <th scope={`col`} className={`table-heading`}>Actions</th>
+                        </tr>
+                        </thead>
+
+                        <tbody className={`bg-white divide-y divide-gray-200`}>
+                        {users?.map((user, index) => (
+                            <tr key={user._id}>
+                                <td className={`table-data`}>{index + 1}</td>
+                                <td className={`table-data`}>{user.name}</td>
+                                <td className={`table-data`}>{user.email}</td>
+                                <td className={`table-data`}>{user.role}</td>
+                                <td className={`table-data`}>{DateUtil.formatDate(user.createdAt)}</td>
+                                <td className={`table-data`}>{DateUtil.formatDate(user.updatedAt)}</td>
+                                <td className={`table-data flex`}>
+                                    <Link
+                                        title={`Edit`}
+                                        className={`edit-btn`}
+                                        href={`/dashboard/admin/users/edit/${user._id}`}
+                                    >
+                                        <FaPen/>
+                                    </Link>
+                                    <button
+                                        className={`ml-3 delete-btn`} title={`Delete`}
+                                        onClick={() => handleDelete(user)}
+                                    >
+                                        <FaTrashCan/>
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {users.map((user, index) => (
+                    <div key={index} className={`sm:hidden`}>
+                        <UserCard user={user} handleDelete={handleDelete}/>
+                    </div>
+                ))}
+            </>
+        )
     )
 }
 
