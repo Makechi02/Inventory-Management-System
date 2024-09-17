@@ -37,7 +37,11 @@ const AddSupplierForm = ({userID}) => {
                 router.back();
             }
         } catch (e) {
-            console.error(e);
+            if (e.status === 409) {
+                toast.error(e.response.data.error);
+            } else {
+                console.error(e);
+            }
         }
     }
 
@@ -50,7 +54,6 @@ const AddSupplierForm = ({userID}) => {
                         type={`text`}
                         id={`name`}
                         value={name}
-                        enterKeyHint={`done`}
                         autoComplete={`off`}
                         className={`dashboard-input`}
                         onChange={event => setName(event.target.value)}
@@ -63,7 +66,6 @@ const AddSupplierForm = ({userID}) => {
                         type={`text`}
                         id={`phone`}
                         value={phone}
-                        enterKeyHint={`done`}
                         autoComplete={`off`}
                         className={`dashboard-input`}
                         onChange={event => setPhone(event.target.value)}

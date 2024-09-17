@@ -34,6 +34,17 @@ export const POST = async (request) => {
 
     try {
         await connectToDB();
+        const existingSupplier = await Supplier.findOne({
+            $or: [
+                { name: name },
+                { phone: phone },
+            ]
+        });
+
+        if (existingSupplier) {
+            return new Response(JSON.stringify({ error: "Supplier with the same name or phone already exists" }), { status: 409, headers });
+        }
+
         const newSupplier = new Supplier({ name, phone, address, addedBy, updatedBy });
 
         await newSupplier.save();
