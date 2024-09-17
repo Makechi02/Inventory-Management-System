@@ -204,22 +204,11 @@ const ItemsTable = ({items, handleDelete, page, totalPages, setPage, toggleDropd
 
                 {items.map((item, index,) => (
                     <div key={index} className="sm:hidden">
-                        <ItemCard
-                            item={item}
-                            index={index}
-                            handleDelete={handleDelete}
-                            activeDropdown={activeDropdown}
-                            toggleDropdown={toggleDropdown}
-                            dropdownRef={dropdownRef}
-                        />
+                        <ItemCard item={item} handleDelete={handleDelete} />
                     </div>
                 ))}
 
-                <Pagination
-                    currentPage={page}
-                    totalPages={totalPages}
-                    onPageChange={setPage}
-                />
+                <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
             </div>
         ));
 };

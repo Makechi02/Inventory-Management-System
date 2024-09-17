@@ -1,10 +1,9 @@
 "use client"
 
 import Link from "next/link";
-import {FaPen} from "react-icons/fa";
-import {FaEllipsisVertical, FaTrashCan} from "react-icons/fa6";
+import {FaEye, FaPen} from "react-icons/fa";
+import {FaTrashCan} from "react-icons/fa6";
 import DateUtil from "@/utils/dateUtil";
-import {DropdownOptions} from "@/app/dashboard/admin/items/page";
 
 const Card = ({title, text}) => {
     return (
@@ -43,7 +42,7 @@ export const CategoryCard = ({category, handleDelete}) => {
     )
 }
 
-export const ItemCard = ({item, handleDelete, index, activeDropdown, toggleDropdown, dropdownRef}) => {
+export const ItemCard = ({item, handleDelete}) => {
     return (
         <div className={`bg-gray-100 shadow rounded-lg p-4 mt-3`}>
             <Card title={`name`} text={item.name}/>
@@ -52,23 +51,17 @@ export const ItemCard = ({item, handleDelete, index, activeDropdown, toggleDropd
             <Card title={`SKU`} text={item.sku}/>
             <Card title={`quantity`} text={item.quantity}/>
             <Card title={`price`} text={item.price}/>
-            <Card title={`category`} text={item.category?.name ? item.category.name : 'unknown'}/>
+            <Card title={`category`} text={item.category?.name ? item.category.name : 'unknown'} />
             <div className={`flex flex-wrap gap-2 justify-between items-center text-sm font-medium text-gray-500 mt-2`}>
                 <span>Actions:</span>
                 <div className={`flex`}>
-                    <div
-                        onClick={() => toggleDropdown(index)}
-                        className={`cursor-pointer hover:bg-gray-300 rounded-full h-[30px] aspect-square flex justify-center items-center`}>
-                        <FaEllipsisVertical/>
-                    </div>
-                    {activeDropdown === index && (
-                        <DropdownOptions
-                            item={item}
-                            dropdownRef={dropdownRef}
-                            toggleDropdown={toggleDropdown}
-                            handleDelete={handleDelete}
-                        />
-                    )}
+                    <Link title={`View`} className={`edit-btn`} href={`/dashboard/admin/items/${item._id}`}>
+                        <FaEye />
+                    </Link>
+                    <Link title={`Edit`} className={`ml-3 edit-btn`} href={`/dashboard/admin/items/edit/${item._id}`}>
+                        <FaPen/>
+                    </Link>
+                    <button className={`ml-3 delete-btn`} title={`Delete`} onClick={handleDelete}><FaTrashCan/></button>
                 </div>
             </div>
         </div>
