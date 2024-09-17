@@ -1,9 +1,9 @@
 "use client"
 
 import {FaEye, FaFilter, FaPen} from 'react-icons/fa';
-import {FaTrashCan} from 'react-icons/fa6';
+import {FaEllipsisVertical, FaTrashCan} from 'react-icons/fa6';
 import Link from 'next/link';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {useRouter, useSearchParams} from 'next/navigation';
 import ItemService from '@/service/ItemService';
 import {ItemCard} from '@/components/ui/dashboard/admin/TableCards';
@@ -23,6 +23,7 @@ const Page = () => {
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
+    const [activeDropdown, setActiveDropdown] = useState(null);
 
     const router = useRouter();
 
@@ -35,6 +36,8 @@ const Page = () => {
     const category = searchParams.get('category');
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
+
+    const dropdownRef = useRef(null);
 
     const handleDelete = (item) => {
         showConfirmDialog(
@@ -81,6 +84,23 @@ const Page = () => {
         fetchAllCategories();
     }, [query, category, minPrice, maxPrice, page, limit]);
 
+    const toggleDropdown = (index) => {
+        setActiveDropdown(activeDropdown === index ? null : index);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setActiveDropdown(null);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [dropdownRef]);
+
     return (
         <div>
             <FiltersModal
@@ -89,26 +109,25 @@ const Page = () => {
                 toggleVisibility={toggleFiltersVisibility}
             />
 
-            <div className="bg-white p-4 rounded-lg shadow-lg">
-                <h1 className="page-heading">Items</h1>
+            <div className={`bg-white p-4 rounded-lg shadow-lg`}>
+                <h1 className={`page-heading`}>Items</h1>
 
-                <div className="mt-4 flex w-full justify-end">
-                    <Link href={`/dashboard/admin/items/add`} className="add-btn">Add Item</Link>
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                    <button
-                        onClick={toggleFiltersVisibility}
-                        title="Apply filters"
-                        className="flex gap-2 items-center bg-blue-600 hover:bg-blue-900 p-2 rounded-lg text-gray-100"
-                    >
-                        <FaFilter/>
-                        Filters
-                    </button>
+                <div className="mt-4 flex flex-wrap gap-2 items-center justify-between">
                     <SearchForm/>
+                    <div className={`flex gap-2`}>
+                        <button
+                            onClick={toggleFiltersVisibility}
+                            title={`Apply filters`}
+                            className={`flex gap-2 items-center bg-blue-600 hover:bg-blue-900 p-2 rounded-lg text-gray-100`}
+                        >
+                            <FaFilter/>
+                            Filters
+                        </button>
+                        <Link href={`/dashboard/admin/items/add`} className={`add-btn`}>Add Item</Link>
+                    </div>
                 </div>
 
-                <div className="mt-8">
+                <div className={`mt-8`}>
                     {loading ? (
                         <LoadingSpinner/>
                     ) : (
@@ -119,6 +138,9 @@ const Page = () => {
                                 page={page}
                                 totalPages={totalPages}
                                 setPage={setPage}
+                                activeDropdown={activeDropdown}
+                                toggleDropdown={toggleDropdown}
+                                dropdownRef={dropdownRef}
                             />
                         </>
                     )}
@@ -128,17 +150,16 @@ const Page = () => {
     );
 };
 
-const ItemsTable = ({items, handleDelete, page, totalPages, setPage}) => {
+const ItemsTable = ({items, handleDelete, page, totalPages, setPage, toggleDropdown, activeDropdown, dropdownRef}) => {
     return (
         items.length === 0 ? (
-            <p className="text-center">No Items found</p>
+            <p className={`text-center`}>No Items found</p>
         ) : (
             <div>
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 hidden sm:table">
+                <div className={`overflow-x-auto`}>
+                    <table className={`min-w-full divide-y divide-gray-200 hidden sm:table`}>
                         <thead className="bg-gray-50">
                         <tr>
-                            <th scope="col" className="table-heading">S/No</th>
                             <th scope="col" className="table-heading">Name</th>
                             <th scope="col" className="table-heading">Brand</th>
                             <th scope="col" className="table-heading">Model</th>
@@ -152,8 +173,7 @@ const ItemsTable = ({items, handleDelete, page, totalPages, setPage}) => {
 
                         <tbody className="bg-white divide-y divide-gray-200">
                         {items.map((item, index) => (
-                            <tr key={index}>
-                                <td className="table-data">{index + 1}</td>
+                            <tr key={item._id}>
                                 <td className="table-data">{item.name}</td>
                                 <td className="table-data">{item.brand}</td>
                                 <td className="table-data">{item.model}</td>
@@ -161,28 +181,20 @@ const ItemsTable = ({items, handleDelete, page, totalPages, setPage}) => {
                                 <td className="table-data">{item.quantity}</td>
                                 <td className="table-data">{item.price}</td>
                                 <td className="table-data">{item.category?.name || 'Unknown'}</td>
-                                <td className="table-data flex">
-                                    <Link
-                                        title="View"
-                                        className="edit-btn"
-                                        href={`/dashboard/admin/items/${item._id}`}
-                                    >
-                                        <FaEye/>
-                                    </Link>
-                                    <Link
-                                        title="Edit"
-                                        className="edit-btn ml-3"
-                                        href={`/dashboard/admin/items/edit/${item._id}`}
-                                    >
-                                        <FaPen/>
-                                    </Link>
-                                    <button
-                                        title="Delete"
-                                        className="ml-3 delete-btn"
-                                        onClick={() => handleDelete(item)}
-                                    >
-                                        <FaTrashCan/>
-                                    </button>
+                                <td className="table-data relative flex justify-center items-center">
+                                    <div
+                                        onClick={() => toggleDropdown(index)}
+                                        className={`cursor-pointer hover:bg-gray-300 rounded-full h-[30px] aspect-square flex justify-center items-center`}>
+                                        <FaEllipsisVertical/>
+                                    </div>
+                                    {activeDropdown === index && (
+                                        <DropdownOptions
+                                            item={item}
+                                            dropdownRef={dropdownRef}
+                                            toggleDropdown={toggleDropdown}
+                                            handleDelete={handleDelete}
+                                        />
+                                    )}
                                 </td>
                             </tr>
                         ))}
@@ -190,9 +202,16 @@ const ItemsTable = ({items, handleDelete, page, totalPages, setPage}) => {
                     </table>
                 </div>
 
-                {items.map((item, index) => (
+                {items.map((item, index,) => (
                     <div key={index} className="sm:hidden">
-                        <ItemCard item={item} handleDelete={handleDelete}/>
+                        <ItemCard
+                            item={item}
+                            index={index}
+                            handleDelete={handleDelete}
+                            activeDropdown={activeDropdown}
+                            toggleDropdown={toggleDropdown}
+                            dropdownRef={dropdownRef}
+                        />
                     </div>
                 ))}
 
@@ -204,5 +223,31 @@ const ItemsTable = ({items, handleDelete, page, totalPages, setPage}) => {
             </div>
         ));
 };
+
+
+export const DropdownOptions = ({item, dropdownRef, handleDelete, toggleDropdown}) => {
+    return (
+        <div ref={dropdownRef} className={`absolute right-4 z-10 mt-2 w-48 bg-white border rounded-lg shadow-lg`}>
+            <Link
+                href={`/dashboard/admin/items/${item._id}`}
+                className={`block px-4 py-2 hover:bg-gray-100`}
+            >
+                <FaEye className={`inline mr-2`} /> View Item
+            </Link>
+            <Link
+                href={`/dashboard/admin/items/edit/${item._id}`}
+                className={`block px-4 py-2 hover:bg-gray-100`}
+            >
+                <FaPen className={`inline mr-2`} /> Edit Item
+            </Link>
+            <button
+                onClick={() => {handleDelete(item); toggleDropdown()}}
+                className={`block w-full text-left px-4 py-2 hover:bg-gray-100`}
+            >
+                <FaTrashCan className={`inline mr-2`} /> Delete Item
+            </button>
+        </div>
+    )
+}
 
 export default Page;
