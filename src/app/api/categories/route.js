@@ -1,28 +1,34 @@
-import {connectToDB} from "@/utils/database";
-import Category from "@/models/category";
 import {getCorsHeaders} from "@/app/api/options";
-import {validateCategory} from "@/utils/validation";
-import {sanitizeCategory} from "@/utils/sanitization";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/app/api/auth/[...nextauth]/route";
+import axios from "axios";
+
+const CATEGORIES_BASE_URL = 'https://prior-lauree-makechi-b2d9cdc0.koyeb.app/api/v1/categories';
 
 export const GET = async (request) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
 
+    const {accessToken} = await getServerSession(authOptions);
+
     const { searchParams } = new URL(request.url);
     const query = searchParams.get("query") || "";
 
     try {
-        await connectToDB();
-        const categories = await Category.find({
-            $or: [
-                { name: new RegExp(query, "i") }
-            ]
-        })
-            .populate('createdBy', 'name')
-            .populate('updatedBy', 'name');
+        const response = await axios.get(`${CATEGORIES_BASE_URL}${query && '?query=' + query}`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+
+        const categories = response?.data;
         return new Response(JSON.stringify(categories), { headers });
     } catch (e) {
         console.log(e);
+        if (!e.response) {
+            return new Response("No server response", {status: 500, headers});
+        }
         return new Response("Failed to fetch all categories", { status: 500, headers });
     }
 };
@@ -30,23 +36,27 @@ export const GET = async (request) => {
 export const POST = async (request) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
-    const { name, createdBy, updatedBy } = await request.json();
 
-    const errors = validateCategory({ name, createdBy, updatedBy });
-    if (errors.length > 0) {
-        return new Response(JSON.stringify({ errors }), { status: 400, headers });
-    }
+    const {accessToken} = await getServerSession(authOptions);
 
-    const sanitizedCategory = sanitizeCategory({ name, createdBy, updatedBy });
+    const newCategory = await request.json();
 
     try {
-        await connectToDB();
-        const newCategory = new Category(sanitizedCategory);
-        await newCategory.save();
+        const response = await axios.post(CATEGORIES_BASE_URL, newCategory, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
 
-        return new Response(JSON.stringify(newCategory), { status: 201, headers });
+        return new Response(JSON.stringify(response.data), { status: 201, headers });
     } catch (e) {
-        return new Response("Failed to create a new category", { status: 500, headers });
+        console.error(e);
+        if (e.response.status === 409) {
+            return new Response(JSON.stringify({ error: e.response }), { status: 409, headers });
+        } else {
+            return new Response("Failed to create a new category", { status: 500, headers });
+        }
     }
 };
 

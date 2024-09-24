@@ -31,7 +31,7 @@ const Page = () => {
 
 
     const deleteCategory = (category) => {
-        CategoryService.deleteCategory(category._id)
+        CategoryService.deleteCategory(category.id)
             .then(response => {
                 if (response.status === 200) {
                     toast.success('Category deleted successfully');
@@ -59,12 +59,9 @@ const Page = () => {
         <div className={`bg-white py-4 p-4 rounded-lg shadow-lg`}>
             <h1 className={`page-heading`}>Categories</h1>
 
-            <div className={`mt-4 flex w-full justify-end`}>
-                <Link href={`/dashboard/admin/categories/add`} className={`add-btn`}>Add Category</Link>
-            </div>
-
-            <div className={`mt-4`}>
+            <div className={`mt-4 flex flex-wrap gap-2 justify-between items-center`}>
                 <SearchForm/>
+                <Link href={`/dashboard/admin/categories/add`} className={`add-btn`}>Add Category</Link>
             </div>
 
             <div className={`mt-8`}>
@@ -98,7 +95,7 @@ const CategoriesTable = ({categories, handleDelete}) => {
 
                         <tbody className={`bg-white divide-y divide-gray-200`}>
                         {categories?.map((category, index) => (
-                            <tr key={category._id}>
+                            <tr key={category.id}>
                                 <td className={`table-data`}>{index + 1}</td>
                                 <td className={`table-data`}>{category.name}</td>
                                 <td className={`table-data`}>{category?.createdBy?.name}</td>
@@ -109,7 +106,7 @@ const CategoriesTable = ({categories, handleDelete}) => {
                                     <Link
                                         title={`Edit`}
                                         className={`edit-btn`}
-                                        href={`/dashboard/admin/categories/edit/${category._id}`}
+                                        href={`/dashboard/admin/categories/edit/${category.id}`}
                                     >
                                         <FaPen/>
                                     </Link>

@@ -35,7 +35,7 @@ export const CategoryCard = ({category, handleDelete}) => {
             <Card title={`updated by`} text={category?.updatedBy?.name}/>
             <Card title={`updated at`} text={DateUtil.formatDate(category.updatedAt)}/>
             <ActionsCard
-                href={`/dashboard/admin/categories/edit/${category._id}`}
+                href={`/dashboard/admin/categories/edit/${category.id}`}
                 handleDelete={() => handleDelete(category)}
             />
         </div>

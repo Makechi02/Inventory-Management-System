@@ -1,42 +1,49 @@
-import {connectToDB} from "@/utils/database";
-import Category from "@/models/category";
 import {getCorsHeaders} from "@/app/api/options";
-import {validateCategory} from "@/utils/validation";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/app/api/auth/[...nextauth]/route";
+import axios from "axios";
+
+const CATEGORIES_BASE_URL = 'https://prior-lauree-makechi-b2d9cdc0.koyeb.app/api/v1/categories';
 
 export const GET = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
     const categoryId = params.id;
 
+    const {accessToken} = await getServerSession(authOptions);
+
     try {
-        await connectToDB();
-        const category = await Category.find({ _id: categoryId });
+        const response = await axios.get(`${CATEGORIES_BASE_URL}/${categoryId}`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+
+        const category = response?.data;
         return new Response(JSON.stringify(category), { headers });
     } catch (e) {
-        return new Response("Category with id not found", { status: 500, headers });
+        return new Response(`Category with id ${categoryId} not found`, { status: 500, headers });
     }
 };
 
 export const PUT = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
-    const {name, updatedBy} = await request.json();
+    const updatedCategory = await request.json();
 
-    const errors = validateCategory({ name, updatedBy });
-    if (errors.length > 0) {
-        return new Response(JSON.stringify({ errors }), { status: 400, headers });
-    }
+    const {accessToken} = await getServerSession(authOptions);
 
     try {
-        await connectToDB();
-        const response = await Category.updateOne(
-            { _id: params.id },
-            {
-                $set: {name, updatedAt: Date.now(), updatedBy}
+        const response = await axios.put(`${CATEGORIES_BASE_URL}/${params.id}`, updatedCategory, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
             }
-        );
-        return new Response(JSON.stringify(response), { status: 200, headers });
+        });
+        return new Response(JSON.stringify(response.data), { status: 200, headers });
     } catch (e) {
+        console.error(e);
         return new Response("Failed to update category", { status: 500, headers });
     }
 };
@@ -45,18 +52,18 @@ export const DELETE = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
 
+    const {accessToken} = await getServerSession(authOptions);
+
     try {
-        await connectToDB();
-
-        const category = await Category.findById(params.id);
-
-        if (!category) {
-            return new Response("Category not found", {status: 500, headers});
-        }
-
-        await Category.findByIdAndDelete(params.id);
-        return new Response("Success", { status: 200, headers });
+        const response = await axios.delete(`${CATEGORIES_BASE_URL}/${params.id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+        return new Response(response.data, { status: 200, headers });
     } catch (e) {
+        console.error(e);
         return new Response("Failed to delete category", { status: 500, headers });
     }
 };
@@ -64,8 +71,5 @@ export const DELETE = async (request, { params }) => {
 export const OPTIONS = async (request) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
-    return new Response(null, {
-        status: 200,
-        headers,
-    });
+    return new Response(null, {status: 200, headers});
 };

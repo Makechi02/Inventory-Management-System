@@ -17,11 +17,7 @@ const CategoryService = {
     },
 
     updateCategory: (id, category) => {
-        return axios.put(`${CATEGORIES_API_BASE_URL}/${id}`, category, {
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
+        return axios.put(`${CATEGORIES_API_BASE_URL}/${id}`, category);
     },
 
     deleteCategory: (id) => {
