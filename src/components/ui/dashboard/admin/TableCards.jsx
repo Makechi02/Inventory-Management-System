@@ -90,7 +90,7 @@ export const UserCard = ({user, handleDelete}) => {
             <Card title={`added at`} text={DateUtil.formatDate(user.createdAt)} />
             <Card title={`updated at`} text={DateUtil.formatDate(user.updatedAt)} />
             <ActionsCard
-                href={`/dashboard/admin/users/edit/${user?._id}`}
+                href={`/dashboard/admin/users/edit/${user?.id}`}
                 handleDelete={() => handleDelete(user)}
             />
         </div>

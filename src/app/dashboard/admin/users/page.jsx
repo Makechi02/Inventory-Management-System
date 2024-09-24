@@ -28,7 +28,7 @@ const Page = () => {
     }
 
     const deleteUser = (user) => {
-        UserService.deleteUser(user._id)
+        UserService.deleteUser(user.id)
             .then(response => {
                 if (response.status === 200) {
                     toast.success('User deleted successfully');
@@ -47,6 +47,9 @@ const Page = () => {
                     setLoading(false);
                 })
                 .catch(error => {
+                    if (error.response.data === "No server response") {
+                        toast.error(error.response.data);
+                    }
                     console.error(error);
                     setLoading(false);
                 });
@@ -59,12 +62,9 @@ const Page = () => {
         <div className={`bg-white py-4 p-4 rounded-lg shadow-lg`}>
             <h1 className={`page-heading`}>Users</h1>
 
-            <div className={`mt-4 flex w-full justify-end`}>
-                <Link href={`/dashboard/admin/users/add`} className={`add-btn`}>Add User</Link>
-            </div>
-
-            <div className={`mt-4`}>
+            <div className={`mt-4 flex flex-wrap gap-4 justify-between items-center`}>
                 <SearchForm/>
+                <Link href={`/dashboard/admin/users/add`} className={`add-btn`}>Add User</Link>
             </div>
 
             <div className={`mt-8`}>
@@ -102,7 +102,7 @@ const UsersTable = ({users, handleDelete}) => {
 
                         <tbody className={`bg-white divide-y divide-gray-200`}>
                         {users?.map((user, index) => (
-                            <tr key={user._id}>
+                            <tr key={user.id}>
                                 <td className={`table-data`}>{index + 1}</td>
                                 <td className={`table-data`}>{user.name}</td>
                                 <td className={`table-data`}>{user.email}</td>
@@ -113,7 +113,7 @@ const UsersTable = ({users, handleDelete}) => {
                                     <Link
                                         title={`Edit`}
                                         className={`edit-btn`}
-                                        href={`/dashboard/admin/users/edit/${user._id}`}
+                                        href={`/dashboard/admin/users/edit/${user.id}`}
                                     >
                                         <FaPen/>
                                     </Link>

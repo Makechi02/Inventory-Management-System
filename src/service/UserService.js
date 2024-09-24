@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const USERS_API_BASE_URL = "/api/users";
-const USERS_AUTH_API_BASE_URL = "/api/auth";
+// const USERS_AUTH_API_BASE_URL = "http://localhost:8080/api/v1/users/auth";
+const USERS_AUTH_API_BASE_URL = "https://prior-lauree-makechi-b2d9cdc0.koyeb.app/api/v1/users/auth";
 
 export const UserAuthService = {
     saveUser: (user) => {
@@ -18,7 +19,15 @@ export const UserAuthService = {
                 "Content-Type": "application/json"
             }
         });
-    }
+    },
+
+    login: (credentials) => {
+        return axios.post(`${USERS_AUTH_API_BASE_URL}/login`, credentials, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+    },
 }
 
 export const UserService = {
@@ -32,11 +41,7 @@ export const UserService = {
     },
 
     updateUser: (id, user) => {
-        return axios.put(`${USERS_API_BASE_URL}/${id}`, user, {
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
+        return axios.put(`${USERS_API_BASE_URL}/${id}`, user);
     },
 
     deleteUser: (id) => {

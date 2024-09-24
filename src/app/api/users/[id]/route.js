@@ -1,17 +1,27 @@
-import {connectToDB} from "@/utils/database";
-import User from "@/models/user";
 import {getCorsHeaders} from "@/app/api/options";
+import axios from "axios";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/app/api/auth/[...nextauth]/route";
+
+const USERS_BASE_URL = 'https://prior-lauree-makechi-b2d9cdc0.koyeb.app/api/v1/users';
 
 export const GET = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
     const userId = params.id;
 
+    const {accessToken} = await getServerSession(authOptions);
+
     try {
-        await connectToDB();
-        const user = await User.find({ _id: userId });
-        return new Response(JSON.stringify(user), { headers });
+        const response = await axios.get(`${USERS_BASE_URL}/${userId}`, {
+            headers: {
+                "Content-Type": 'application/json',
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+        return new Response(JSON.stringify(response?.data), { headers });
     } catch (e) {
+        console.error(e);
         return new Response(`User with id ${userId} not found`, { status: 404, headers });
     }
 };
@@ -19,29 +29,43 @@ export const GET = async (request, { params }) => {
 export const PUT = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
-    const {name, email, role} = await request.json();
+    const updatedUser = await request.json();
+
+    const {accessToken} = await getServerSession(authOptions);
 
     try {
-        await connectToDB();
-
-        const response = await User.updateOne(
-            { _id: params.id },
-            {$set: {name, email, role, updatedAt: Date.now()}}
-        );
-        return new Response(JSON.stringify(response), { status: 200, headers });
+        const response = await axios.put(`${USERS_BASE_URL}/${params.id}`, updatedUser,{
+            headers: {
+                "Content-Type": 'application/json',
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+        return new Response(JSON.stringify(response?.data), { status: 200, headers });
     } catch (e) {
-        return new Response("Failed to update user", { status: 500, headers });
+        if (e.response.status === 400) {
+            return new Response(e.response.data.message, {status: 400, headers});
+        } else {
+            console.error(e.response);
+            return new Response("Failed to update user", { status: 500, headers });
+        }
     }
 };
 
 export const DELETE = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
+    const {accessToken} = await getServerSession(authOptions);
+
     try {
-        await connectToDB();
-        await User.deleteOne({ _id: params.id });
-        return new Response("Success", { status: 200, headers });
+        const response = await axios.delete(`${USERS_BASE_URL}/${params.id}`, {
+            headers: {
+                "Content-Type": 'application/json',
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+        return new Response(response.data, { status: 200, headers });
     } catch (e) {
+        console.error(e);
         return new Response("Failed to delete user", { status: 500, headers });
     }
 };
@@ -49,8 +73,5 @@ export const DELETE = async (request, { params }) => {
 export const OPTIONS = async (request) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
-    return new Response(null, {
-        status: 200,
-        headers,
-    });
+    return new Response(null, { status: 200, headers });
 };

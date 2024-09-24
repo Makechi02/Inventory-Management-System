@@ -1,8 +1,6 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
 import NextAuth from "next-auth";
-import {connectToDB} from "@/utils/database";
-import User from "@/models/user";
-import bcrypt from "bcryptjs";
+import {UserAuthService} from "@/service/UserService";
 
 export const authOptions = {
     providers: [
@@ -13,24 +11,18 @@ export const authOptions = {
                 password: {label: 'Password', type: 'text'}
             },
             async authorize(credentials) {
-                await connectToDB();
+                try {
+                    const response = await UserAuthService.login(JSON.stringify(credentials));
+                    return response.data;
+                } catch (error) {
+                    if (!error?.response)
+                        throw new Error("No server response");
 
-                const user = await User.findOne({email: credentials.email});
-                if (!user) {
-                    throw new Error("No user found with this email");
+                    if (error.response.status === 401)
+                        throw new Error("Invalid credentials");
+
+                    else console.error("Error: " + error);
                 }
-
-                const isValidPassword = bcrypt.compareSync(credentials.password, user.password);
-                if (!isValidPassword) {
-                    throw new Error("Invalid password");
-                }
-
-                return {
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    role: user.role
-                };
             }
         })
     ],
@@ -40,15 +32,17 @@ export const authOptions = {
     callbacks: {
         async jwt({token, user}) {
             if (user) {
-                token.id = user.id;
-                token.role = user.role;
+                token.accessToken = user.access_token;
+                token.refreshToken = user.refresh_token;
+                token.user = user.user;
             }
             return token;
         },
         async session({session, token}) {
             if (token) {
-                session.user.id = token.id;
-                session.user.role = token.role;
+                session.user = token.user;
+                session.accessToken = token.accessToken;
+                session.refreshToken = token.refreshToken;
             }
             return session;
         }

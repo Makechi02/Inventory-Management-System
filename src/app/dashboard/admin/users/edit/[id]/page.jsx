@@ -34,21 +34,25 @@ const Page = ({params}) => {
 
         try {
             const updatedUser = {name, email, role};
-            const response = await UserService.updateUser(user._id, updatedUser);
+            const response = await UserService.updateUser(user.id, updatedUser);
 
             if (response.status === 200) {
                 toast.success('User updated successfully');
                 router.back();
             }
         } catch (e) {
-            console.error(e);
+            if (e.status === 400) {
+                toast.error(e.response.data);
+            } else {
+                console.error(e);
+            }
         }
     }
 
     useEffect(() => {
         const fetchItemByID = () => {
             UserService.getUserById(params.id)
-                .then(response => setUser(response.data[0]))
+                .then(response => setUser(response.data))
                 .catch(error => console.error(error));
         }
 
