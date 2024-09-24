@@ -24,7 +24,7 @@ const Page = ({params}) => {
     }
 
     const deleteSupplier = (supplier) => {
-        SupplierService.deleteSupplier(supplier._id)
+        SupplierService.deleteSupplier(supplier.id)
             .then(response => {
                 if (response.status === 200) {
                     toast.success('Supplier deleted successfully');
@@ -37,10 +37,7 @@ const Page = ({params}) => {
     useEffect(() => {
         const fetchSupplierByID = () => {
             SupplierService.getSupplierById(params.id)
-                .then(response => {
-                    console.log(response.data);
-                    setSupplier(response.data[0]);
-                })
+                .then(response => setSupplier(response.data))
                 .catch(error => console.error(error));
         }
 
@@ -58,7 +55,7 @@ const Page = ({params}) => {
                     <Link
                         title={`Edit`}
                         className={`edit-btn flex items-center gap-2`}
-                        href={`/dashboard/admin/suppliers/edit/${supplier._id}`}
+                        href={`/dashboard/admin/suppliers/edit/${supplier.id}`}
                     >
                         <FaPen/> Edit Supplier
                     </Link>
@@ -107,7 +104,7 @@ const Page = ({params}) => {
                                 <div className={`input-box`}>
                                     <p className={`dashboard-label`}>Added By:</p>
                                     <div className={`dashboard-input`}>
-                                        <p>{supplier.addedBy.name}</p>
+                                        <p>{supplier?.addedBy?.name}</p>
                                     </div>
                                 </div>
 
@@ -121,7 +118,7 @@ const Page = ({params}) => {
                                 <div className={`input-box`}>
                                     <p className={`dashboard-label`}>Updated By:</p>
                                     <div className={`dashboard-input`}>
-                                        <p>{supplier.updatedBy.name}</p>
+                                        <p>{supplier?.updatedBy?.name}</p>
                                     </div>
                                 </div>
 

@@ -8,8 +8,8 @@ const SupplierService = {
         return axios.get(`${SUPPLIERS_API_BASE_URL}/${queryString}`);
     },
 
-    addSupplier: (category) => {
-        return axios.post(SUPPLIERS_API_BASE_URL, category);
+    addSupplier: (supplier) => {
+        return axios.post(SUPPLIERS_API_BASE_URL, supplier);
     },
 
     getSupplierById: (id) => {

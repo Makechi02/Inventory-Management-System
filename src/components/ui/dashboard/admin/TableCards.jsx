@@ -104,7 +104,7 @@ export const SupplierCard = ({supplier, handleDelete}) => {
             <Card title={`phone`} text={supplier.phone}/>
             <Card title={`address`} text={supplier.address}/>
             <ActionsCard
-                href={`/dashboard/admin/suppliers/edit/${supplier._id}`}
+                href={`/dashboard/admin/suppliers/edit/${supplier.id}`}
                 handleDelete={() => handleDelete(supplier)}
             />
         </div>

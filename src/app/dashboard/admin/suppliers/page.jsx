@@ -28,7 +28,7 @@ const Page = () => {
     }
 
     const deleteSupplier = (supplier) => {
-        SupplierService.deleteSupplier(supplier._id)
+        SupplierService.deleteSupplier(supplier.id)
             .then(response => {
                 if (response.status === 200) {
                     toast.success('Supplier deleted successfully');
@@ -56,12 +56,9 @@ const Page = () => {
         <div className={`bg-white py-4 p-4 rounded-lg shadow-lg`}>
             <h1 className={`page-heading`}>Suppliers</h1>
 
-            <div className={`mt-4 flex w-full justify-end`}>
-                <Link href={`/dashboard/admin/suppliers/add`} className={`add-btn`}>Add Supplier</Link>
-            </div>
-
-            <div className={`mt-4`}>
+            <div className={`mt-4 flex flex-wrap gap-2 justify-between items-center`}>
                 <SearchForm/>
+                <Link href={`/dashboard/admin/suppliers/add`} className={`add-btn`}>Add Supplier</Link>
             </div>
 
             <div className={`mt-8`}>
@@ -93,7 +90,7 @@ const SuppliersTable = ({suppliers, handleDelete}) => {
 
                         <tbody className={`bg-white divide-y divide-gray-200`}>
                         {suppliers?.map((supplier, index) => (
-                            <tr key={supplier._id}>
+                            <tr key={supplier.id}>
                                 <td className={`table-data`}>{index + 1}</td>
                                 <td className={`table-data`}>{supplier.name}</td>
                                 <td className={`table-data`}>{supplier.phone}</td>
@@ -102,7 +99,7 @@ const SuppliersTable = ({suppliers, handleDelete}) => {
                                     <Link
                                         title={`Preview`}
                                         className={`edit-btn`}
-                                        href={`/dashboard/admin/suppliers/${supplier._id}`}
+                                        href={`/dashboard/admin/suppliers/${supplier.id}`}
                                     >
                                         <FaEye/>
                                     </Link>
@@ -110,7 +107,7 @@ const SuppliersTable = ({suppliers, handleDelete}) => {
                                     <Link
                                         title={`Edit`}
                                         className={`edit-btn ml-3`}
-                                        href={`/dashboard/admin/suppliers/edit/${supplier._id}`}
+                                        href={`/dashboard/admin/suppliers/edit/${supplier.id}`}
                                     >
                                         <FaPen/>
                                     </Link>

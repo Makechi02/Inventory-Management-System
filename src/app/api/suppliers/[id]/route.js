@@ -1,20 +1,31 @@
-import {connectToDB} from "@/utils/database";
 import {getCorsHeaders} from "@/app/api/options";
-import Supplier from "@/models/supplier";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/app/api/auth/[...nextauth]/route";
+import axios from "axios";
+
+const SUPPLIERS_BASE_URL = 'https://prior-lauree-makechi-b2d9cdc0.koyeb.app/api/v1/suppliers';
 
 export const GET = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
     const supplierID = params.id;
 
+    const {accessToken} = await getServerSession(authOptions);
+
     try {
-        await connectToDB();
-        const supplier = await Supplier
-            .find({ _id: supplierID })
-            .populate('addedBy', 'name')
-            .populate('updatedBy', 'name');
-        return new Response(JSON.stringify(supplier), { headers });
+        const response = await axios.get(`${SUPPLIERS_BASE_URL}/${supplierID}`, {
+            headers: {
+                "Content-Type": 'application/json',
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+
+        return new Response(JSON.stringify(response?.data), { status: 200, headers });
     } catch (e) {
+        console.error(e);
+        if (!e.response) {
+            return new Response("No server response", { status: 400, headers });
+        }
         return new Response("Supplier with id not found", { status: 500, headers });
     }
 };
@@ -22,17 +33,24 @@ export const GET = async (request, { params }) => {
 export const PUT = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
-    const {name, phone, address, updatedBy} = await request.json();
+    const updatedSupplier = await request.json();
+
+    const {accessToken} = await getServerSession(authOptions);
+
     try {
-        await connectToDB();
-        const response = await Supplier.updateOne(
-            { _id: params.id },
-            {
-                $set: {name, phone, address, updatedBy, updatedAt: Date.now()}
+        const response = await axios.put(`${SUPPLIERS_BASE_URL}/${params.id}`, updatedSupplier, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
             }
-        );
-        return new Response(JSON.stringify(response), { status: 200, headers });
+        });
+
+        return new Response(response.data, {status: 200, headers});
     } catch (e) {
+        console.error(e);
+        if (e.response.status === 400) {
+            return new Response(e.response.data.message, {status: 400, headers});
+        }
         return new Response("Failed to update supplier", { status: 500, headers });
     }
 };
@@ -40,10 +58,18 @@ export const PUT = async (request, { params }) => {
 export const DELETE = async (request, { params }) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
+
+    const {accessToken} = await getServerSession(authOptions);
+
     try {
-        await connectToDB();
-        await Supplier.deleteOne({ _id: params.id });
-        return new Response("Success", { status: 200, headers });
+        const response = await axios.delete(`${SUPPLIERS_BASE_URL}/${params.id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+
+        return new Response(response.data, { status: 200, headers });
     } catch (e) {
         return new Response("Failed to delete supplier", { status: 500, headers });
     }
@@ -52,8 +78,5 @@ export const DELETE = async (request, { params }) => {
 export const OPTIONS = async (request) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
-    return new Response(null, {
-        status: 200,
-        headers,
-    });
+    return new Response(null, {status: 200, headers});
 };
