@@ -8,8 +8,8 @@ const ItemService = {
         const category = params.category;
         const minPrice = params.minPrice;
         const maxPrice = params.maxPrice;
-        const page = params.page || 1;
-        const limit = params.limit || 10;
+        const page = params.page;
+        const limit = params.limit;
 
         const queryString = new URLSearchParams();
 

@@ -24,7 +24,7 @@ const Page = ({params}) => {
     };
 
     const deleteItem = (item) => {
-        ItemService.deleteItem(item._id)
+        ItemService.deleteItem(item.id)
             .then(response => {
                 if (response.status === 200) {
                     toast.success('Item deleted successfully');
@@ -37,9 +37,7 @@ const Page = ({params}) => {
     useEffect(() => {
         const fetchItemByID = () => {
             ItemService.getItemById(params.id)
-                .then(response => {
-                    setItem(response.data[0]);
-                })
+                .then(response => setItem(response.data))
                 .catch(error => console.error(error));
         }
 
@@ -57,7 +55,7 @@ const Page = ({params}) => {
                     <Link
                         title={`Edit`}
                         className={`edit-btn flex items-center gap-2`}
-                        href={`/dashboard/admin/items/edit/${item._id}`}
+                        href={`/dashboard/admin/items/edit/${item.id}`}
                     >
                         <FaPen/>
                         Edit Item
@@ -108,6 +106,13 @@ const Page = ({params}) => {
                                     <p className={`dashboard-label`}>Price:</p>
                                     <div className={`dashboard-input`}>
                                         <p>{item.price}</p>
+                                    </div>
+                                </div>
+
+                                <div className={`input-box`}>
+                                    <p className={`dashboard-label`}>Stock Alert:</p>
+                                    <div className={`dashboard-input`}>
+                                        <p>{item.stockAlert}</p>
                                     </div>
                                 </div>
 

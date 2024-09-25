@@ -1,67 +1,37 @@
-import {connectToDB} from "@/utils/database";
-import Item from "@/models/item";
 import {getCorsHeaders} from "@/app/api/options";
-import {validateItem} from "@/utils/validation";
-import {sanitizeItem} from "@/utils/sanitization";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/app/api/auth/[...nextauth]/route";
+import axios from "axios";
+
+const ITEMS_BASE_URL = 'https://prior-lauree-makechi-b2d9cdc0.koyeb.app/api/v1/items';
 
 export const GET = async (request) => {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
 
+    const {accessToken} = await getServerSession(authOptions);
+
     const { searchParams } = new URL(request.url);
     const query = searchParams.get("query") || "";
-    const category = searchParams.get("category") || "";
-    const minPrice = parseFloat(searchParams.get("minPrice")) || 0;
-    const maxPrice = parseFloat(searchParams.get("maxPrice")) || Infinity;
-    const page = parseInt(searchParams.get("page")) || 1;
-    const limit = parseInt(searchParams.get("limit")) || 10;
+    const size = parseInt(searchParams.get("size")) || 10;
+    const page = parseInt(searchParams.get("page")) || 0;
+    const sortBy = searchParams.get("sortBy") || "title";
+    const sortDirection = searchParams.get("sortDirection") || "asc";
 
     try {
-        await connectToDB();
+        const response = await axios.get(`${ITEMS_BASE_URL}`, {
+            params: {
+                query, size, page, sortBy, sortDirection
+            },
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
 
-        const searchFilter = {
-            $and: [
-                {
-                    $or: [
-                        { name: new RegExp(query, "i") },
-                        { brand: new RegExp(query, "i") },
-                        { model: new RegExp(query, "i") },
-                        { sku: new RegExp(query, "i") }
-                    ]
-                },
-                {
-                    price: {
-                        $gte: minPrice,
-                        $lte: maxPrice
-                    }
-                }
-            ]
-        };
+        console.log(response.data);
 
-        if (category) {
-            searchFilter.$and.push({ category });
-        }
-
-        const skip = (page - 1) * limit;
-
-        const items = await Item.find(searchFilter)
-            .skip(skip)
-            .limit(limit)
-            .populate('category', 'name')
-            .populate('supplier', 'name')
-            .populate('createdBy', 'name')
-            .populate('updatedBy', 'name');
-
-       const totalItems = await Item.countDocuments(searchFilter);
-       const totalPages = Math.ceil(totalItems / limit);
-
-      return new Response(
-            JSON.stringify({
-                items,
-                pagination: {page, limit, totalPages, totalItems}
-            }),
-            { headers }
-        );
+        return new Response(JSON.stringify(response.data), { status: response.status, headers });
     } catch (e) {
         console.error(e);
         return new Response("Failed to fetch items", { status: 500, headers });
@@ -74,17 +44,17 @@ export const POST = async (request) => {
 
     const item = await request.json();
 
-    const validationErrors = validateItem(item);
-    if (validationErrors.length > 0) {
-        return new Response(JSON.stringify({ errors: validationErrors }), { status: 400, headers });
-    }
-
-    const sanitizedItem = sanitizeItem(item);
+    const {accessToken} = await getServerSession(authOptions);
 
     try {
-        await connectToDB();
-        const newItem = new Item(sanitizedItem);
-        await newItem.save();
+        const response = await axios.post(ITEMS_BASE_URL, item, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+
+        const newItem = response.data;
         return new Response(JSON.stringify(newItem), { status: 201, headers });
     } catch (e) {
         console.error(e);

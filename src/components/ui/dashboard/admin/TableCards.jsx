@@ -55,10 +55,10 @@ export const ItemCard = ({item, handleDelete}) => {
             <div className={`flex flex-wrap gap-2 justify-between items-center text-sm font-medium text-gray-500 mt-2`}>
                 <span>Actions:</span>
                 <div className={`flex`}>
-                    <Link title={`View`} className={`edit-btn`} href={`/dashboard/admin/items/${item._id}`}>
+                    <Link title={`View`} className={`edit-btn`} href={`/dashboard/admin/items/${item.id}`}>
                         <FaEye />
                     </Link>
-                    <Link title={`Edit`} className={`ml-3 edit-btn`} href={`/dashboard/admin/items/edit/${item._id}`}>
+                    <Link title={`Edit`} className={`ml-3 edit-btn`} href={`/dashboard/admin/items/edit/${item.id}`}>
                         <FaPen/>
                     </Link>
                     <button className={`ml-3 delete-btn`} title={`Delete`} onClick={handleDelete}><FaTrashCan/></button>

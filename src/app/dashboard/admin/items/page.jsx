@@ -20,7 +20,7 @@ const Page = () => {
     const [categories, setCategories] = useState([]);
     const [isFiltersVisible, setIsFiltersVisible] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(0);
     const [limit, setLimit] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
     const [activeDropdown, setActiveDropdown] = useState(null);
@@ -47,7 +47,7 @@ const Page = () => {
     };
 
     const deleteItem = (item) => {
-        ItemService.deleteItem(item._id)
+        ItemService.deleteItem(item.id)
             .then(response => {
                 if (response.status === 200) {
                     toast.success('Item deleted successfully');
@@ -61,10 +61,10 @@ const Page = () => {
         setLoading(true);
         ItemService.getAllItems({query, category, minPrice, maxPrice, page, limit})
             .then(response => {
-                setItems(response.data.items);
-                setPage(response.data.pagination.page);
-                setTotalPages(response.data.pagination.totalPages);
-                setLimit(response.data.pagination.limit);
+                setItems(response.data.content);
+                setPage(response.data.page.number);
+                setTotalPages(response.data.page.totalPages);
+                setLimit(response.data.page.size);
                 setLoading(false);
             })
             .catch(error => {
@@ -173,7 +173,7 @@ const ItemsTable = ({items, handleDelete, page, totalPages, setPage, toggleDropd
 
                         <tbody className="bg-white divide-y divide-gray-200">
                         {items.map((item, index) => (
-                            <tr key={item._id}>
+                            <tr key={item.id}>
                                 <td className="table-data">{item.name}</td>
                                 <td className="table-data">{item.brand}</td>
                                 <td className="table-data">{item.model}</td>
@@ -208,7 +208,7 @@ const ItemsTable = ({items, handleDelete, page, totalPages, setPage, toggleDropd
                     </div>
                 ))}
 
-                <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+                <Pagination currentPage={page + 1} totalPages={totalPages} onPageChange={setPage} />
             </div>
         ));
 };
@@ -218,13 +218,13 @@ export const DropdownOptions = ({item, dropdownRef, handleDelete, toggleDropdown
     return (
         <div ref={dropdownRef} className={`absolute right-4 z-10 mt-2 w-48 bg-white border rounded-lg shadow-lg`}>
             <Link
-                href={`/dashboard/admin/items/${item._id}`}
+                href={`/dashboard/admin/items/${item.id}`}
                 className={`block px-4 py-2 hover:bg-gray-100`}
             >
                 <FaEye className={`inline mr-2`} /> View Item
             </Link>
             <Link
-                href={`/dashboard/admin/items/edit/${item._id}`}
+                href={`/dashboard/admin/items/edit/${item.id}`}
                 className={`block px-4 py-2 hover:bg-gray-100`}
             >
                 <FaPen className={`inline mr-2`} /> Edit Item
