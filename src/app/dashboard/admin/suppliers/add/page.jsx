@@ -5,28 +5,34 @@ import {useState} from "react";
 import {useRouter} from "next/navigation";
 import {toast} from "react-toastify";
 import SupplierService from "@/service/SupplierService";
+import {SubmitBtn} from "@/components/ui/dashboard/Buttons";
 
 const Page = () => {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [address, setAddress] = useState("");
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const handleAddSupplier = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         if (name === '') {
             toast.error("Supplier name is blank");
+            setLoading(false);
             return;
         }
 
         if (phone === '') {
             toast.error("Supplier contact is blank");
+            setLoading(false);
             return;
         }
 
         if (address === '') {
             toast.error("Supplier address is blank");
+            setLoading(false);
             return;
         }
 
@@ -35,6 +41,7 @@ const Page = () => {
             const response = await SupplierService.addSupplier(newSupplier);
             if (response.status === 201) {
                 toast.success('New Supplier added successfully');
+                setLoading(false);
                 router.back();
             }
         } catch (e) {
@@ -43,6 +50,7 @@ const Page = () => {
             } else {
                 console.error(e);
             }
+            setLoading(false);
         }
     }
 
@@ -94,7 +102,7 @@ const Page = () => {
                             </div>
                         </div>
 
-                        <button className={`dashboard-submit-btn`} type={`submit`}>Add Supplier</button>
+                        <SubmitBtn loading={loading} text={`Add Supplier`} />
                     </form>
                 </div>
             </div>

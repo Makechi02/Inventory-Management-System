@@ -52,10 +52,10 @@ export const POST = async (request) => {
 
         return new Response(JSON.stringify(response?.data), { status: 201, headers });
     } catch (e) {
-        console.error(e);
         if (e.response.status === 409) {
-            return new Response(JSON.stringify({ error: e.response }), { status: 409, headers });
+            return new Response(JSON.stringify({ error: e.response.data.message }), { status: 409, headers });
         } else {
+            console.error(e);
             return new Response("Failed to create a new supplier", { status: 500, headers });
         }
     }

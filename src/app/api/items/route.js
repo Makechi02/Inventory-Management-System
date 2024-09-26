@@ -29,8 +29,6 @@ export const GET = async (request) => {
             }
         });
 
-        console.log(response.data);
-
         return new Response(JSON.stringify(response.data), { status: response.status, headers });
     } catch (e) {
         console.error(e);

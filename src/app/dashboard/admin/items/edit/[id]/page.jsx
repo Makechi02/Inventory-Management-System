@@ -7,6 +7,7 @@ import CategoryService from "@/service/CategoryService";
 import SupplierService from "@/service/SupplierService";
 import ItemService from "@/service/ItemService";
 import {toast} from "react-toastify";
+import {SubmitBtn} from "@/components/ui/dashboard/Buttons";
 
 const Page = ({params}) => {
     const [item, setItem] = useState({});
@@ -20,6 +21,7 @@ const Page = ({params}) => {
     const [supplier, setSupplier] = useState('');
     const [categories, setCategories] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const itemID = params.id;
@@ -69,47 +71,56 @@ const Page = ({params}) => {
 
     const handleEditItem = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         if (!name.trim()) {
             toast.error("Item name is required");
+            setLoading(false);
             return;
         }
 
         if (!brand.trim()) {
             toast.error("Item brand is required");
+            setLoading(false);
             return;
         }
 
         if (!model.trim()) {
             toast.error("Model is required");
+            setLoading(false);
             return;
         }
 
         const numericQuantity = parseFloat(quantity);
         if (isNaN(numericQuantity) || numericQuantity <= 0) {
             toast.error("Quantity must be a positive number");
+            setLoading(false);
             return;
         }
 
         const numericPrice = parseFloat(price);
         if (isNaN(numericPrice) || numericPrice <= 0) {
             toast.error("Price must be a positive number");
+            setLoading(false);
             return;
         }
 
         const numericStockAlert = parseFloat(stockAlert);
         if (isNaN(numericStockAlert) || numericStockAlert <= 0) {
             toast.error("Stock alert must be a positive number");
+            setLoading(false);
             return;
         }
 
         if (!category || category === "-- select category --") {
             toast.error("Please choose a category");
+            setLoading(false);
             return;
         }
 
         if (!supplier || supplier === "-- select supplier --") {
             toast.error("Please choose a supplier");
+            setLoading(false);
             return;
         }
 
@@ -119,6 +130,7 @@ const Page = ({params}) => {
 
             if (response.status === 200) {
                 toast.success('Item updated successfully');
+                setLoading(false);
                 router.back();
             }
         } catch (e) {
@@ -128,6 +140,7 @@ const Page = ({params}) => {
                 console.error(e);
                 toast.error("Failed to update item");
             }
+            setLoading(false);
         }
     };
 
@@ -242,7 +255,7 @@ const Page = ({params}) => {
                             </div>
                         </div>
 
-                        <button className={`dashboard-submit-btn`} type={`submit`}>Save Item</button>
+                        <SubmitBtn loading={loading} text={`Save Item`} />
                     </form>
                 </div>
             </div>

@@ -5,43 +5,52 @@ import {useRouter} from "next/navigation";
 import {UserAuthService} from "@/service/UserService";
 import BackBtn from "@/components/ui/dashboard/BackBtn";
 import {toast} from "react-toastify";
+import {SubmitBtn} from "@/components/ui/dashboard/Buttons";
 
 const Page = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [role, setRole] = useState("USER");
+    const [loading, setLoading] = useState(false);
 
     const router = useRouter();
 
     const handleAddUser = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         if (name === '') {
             toast.error("Name is blank");
+            setLoading(false);
             return;
         }
 
         if (email === '') {
             toast.error("Email is blank");
+            setLoading(false);
             return;
         }
 
         const newUser = {name, email, role, password: role.toLowerCase()};
 
-        UserAuthService.saveUser(newUser)
-            .then(response => {
+        try {
+            const response = await UserAuthService.saveUser(newUser);
+            if (response.status === 201) {
                 toast.success(response.data.message);
+                setLoading(false);
                 router.back();
-            }).catch(error => {
-                const response = error?.response;
-                if (response.status === 409) {
-                    toast.error(response.data.message);
-                } else if (response.status === 400) {
-                    toast.error(response.data.errors.join(". "));
-                } else {
-                    console.error(error?.response);
-                }
-            });
+            }
+        } catch (error) {
+            const response = error?.response;
+            if (response?.status === 409) {
+                toast.error(response.data.message);
+            } else if (response?.status === 400) {
+                toast.error(response.data.errors.join(". "));
+            } else {
+                console.error(error);
+            }
+            setLoading(false);
+        }
     }
 
     return (
@@ -93,7 +102,7 @@ const Page = () => {
                                 </select>
                             </div>
                         </div>
-                        <button className={`dashboard-submit-btn`} type={`submit`}>Add User</button>
+                        <SubmitBtn loading={loading} text={"Add User"} />
                     </form>
                 </div>
             </div>

@@ -43,8 +43,14 @@ export const PUT = async (request, { params }) => {
         });
         return new Response(JSON.stringify(response.data), { status: 200, headers });
     } catch (e) {
-        console.error(e);
-        return new Response("Failed to update category", { status: 500, headers });
+        if (e.response.status === 400) {
+            return new Response(e.response.data.message, {status: 400, headers});
+        } else if (e.response.status === 409) {
+            return new Response(e.response.data.message, { status: 409, headers });
+        } else {
+            console.error(e);
+            return new Response("Failed to update category", { status: 500, headers });
+        }
     }
 };
 

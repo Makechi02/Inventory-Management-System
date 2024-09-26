@@ -5,16 +5,20 @@ import {useState} from "react";
 import {useRouter} from "next/navigation";
 import {toast} from "react-toastify";
 import CategoryService from "@/service/CategoryService";
+import {SubmitBtn} from "@/components/ui/dashboard/Buttons";
 
 const Page = () => {
     const [name, setName] = useState("");
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const handleAddCategory = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         if (name === '') {
             toast.error("Category name is required");
+            setLoading(false);
             return;
         }
 
@@ -22,6 +26,7 @@ const Page = () => {
             const response = await CategoryService.addCategory({name});
             if (response.status === 201) {
                 toast.success('New Category added successfully');
+                setLoading(false);
                 router.back();
             }
         } catch (e) {
@@ -31,6 +36,7 @@ const Page = () => {
                 console.error(e);
                 toast.error("Failed to create the category. Please try again.");
             }
+            setLoading(false);
         }
     }
 
@@ -53,7 +59,8 @@ const Page = () => {
                             className={`dashboard-input`}
                             onChange={event => setName(event.target.value)}
                         />
-                        <button className={`dashboard-submit-btn`} type={`submit`}>Add Category</button>
+
+                        <SubmitBtn loading={loading} text={`Add Category`} />
                     </form>
                 </div>
             </div>

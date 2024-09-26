@@ -5,9 +5,11 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import {toast} from "react-toastify";
 import SupplierService from "@/service/SupplierService";
+import {SubmitBtn} from "@/components/ui/dashboard/Buttons";
 
 const Page = ({params}) => {
     const supplierID = params.id;
+    const [loading, setLoading] = useState(false);
 
     const [supplier, setSupplier] = useState({});
     const [name, setName] = useState("");
@@ -17,19 +19,23 @@ const Page = ({params}) => {
 
     const handleEditSupplier = (e) => {
         e.preventDefault();
+        setLoading(true);
 
         if (name === '') {
             toast.error("Supplier name is blank");
+            setLoading(false);
             return;
         }
 
         if (phone === '') {
             toast.error("Supplier contact is blank");
+            setLoading(false);
             return;
         }
 
         if (address === '') {
             toast.error("Supplier address is blank");
+            setLoading(false);
             return;
         }
 
@@ -40,16 +46,19 @@ const Page = ({params}) => {
     const updateSupplier = (data) => {
         SupplierService.updateSupplier(supplierID, data)
             .then(response => {
-                console.log(response);
                 if (response.status === 200) {
                     toast.success('Supplier updated successfully');
+                    setLoading(false);
                     router.back();
                 }
             }).catch(error => {
-                console.error(error);
-                if (error.status === 400) {
+                if (error.status === 400 || error.status === 409) {
                     toast.error(error.response.data);
+                } else {
+                    console.error(error);
+                    toast.error("Failed to update supplier. Please try again!");
                 }
+                setLoading(false);
             });
     }
 
@@ -120,7 +129,7 @@ const Page = ({params}) => {
                                 </div>
                             </div>
 
-                            <button className={`dashboard-submit-btn`} type={`submit`}>Save Supplier</button>
+                            <SubmitBtn loading={loading} text={`Save Supplier`} />
                         </form>
                     ) : (
                         <p>Loading...</p>

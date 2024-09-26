@@ -5,18 +5,22 @@ import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import {toast} from "react-toastify";
 import CategoryService from "@/service/CategoryService";
+import {SubmitBtn} from "@/components/ui/dashboard/Buttons";
 
 const Page =  ({params}) => {
     const categoryID = params.id;
+    const [loading, setLoading] = useState(false);
     const [category, setCategory] = useState({});
     const [name, setName] = useState('');
     const router = useRouter();
 
     const handleEditCategory = (e) => {
         e.preventDefault();
+        setLoading(true);
 
         if (name === '') {
             toast.error("Category name is required");
+            setLoading(false);
             return;
         }
 
@@ -30,10 +34,17 @@ const Page =  ({params}) => {
             .then(response => {
                 if (response.status === 200) {
                     toast.success('Category updated successfully');
+                    setLoading(false);
                     router.back();
                 }
             }).catch(error => {
-                console.error(error);
+                if (error.status === 400 || error.status === 409) {
+                    toast.error(error.response.data);
+                } else {
+                    console.error(error);
+                    toast.error("Failed to update category. Please try again!");
+                }
+                setLoading(false);
             });
     }
 
@@ -71,7 +82,8 @@ const Page =  ({params}) => {
                                 className={`dashboard-input`}
                                 onChange={event => setName(event.target.value)}
                             />
-                            <button className={`dashboard-submit-btn w-fit mt-4`} type={`submit`}>Update Category</button>
+
+                            <SubmitBtn loading={loading} text={`Update Category`}/>
                         </form>
                     ) : (
                         <p>Loading...</p>

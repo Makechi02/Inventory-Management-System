@@ -5,9 +5,11 @@ import {useRouter} from "next/navigation";
 import {UserService} from "@/service/UserService";
 import BackBtn from "@/components/ui/dashboard/BackBtn";
 import {toast} from "react-toastify";
+import {SubmitBtn} from "@/components/ui/dashboard/Buttons";
 
 const Page = ({params}) => {
     const [user, setUser] = useState({});
+    const [loading, setLoading] = useState(false);
 
     const [name, setName] = useState(user.name);
     const [email, setEmail] = useState(user.email);
@@ -16,19 +18,23 @@ const Page = ({params}) => {
 
     const handleEditUser = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         if (name === '') {
             toast.error("Name is blank");
+            setLoading(false);
             return;
         }
 
         if (email === '') {
             toast.error("Email is blank");
+            setLoading(false);
             return;
         }
 
         if (!role || role === "-- select role --") {
             toast.error("Please select a role");
+            setLoading(false);
             return;
         }
 
@@ -38,6 +44,7 @@ const Page = ({params}) => {
 
             if (response.status === 200) {
                 toast.success('User updated successfully');
+                setLoading(false);
                 router.back();
             }
         } catch (e) {
@@ -46,6 +53,7 @@ const Page = ({params}) => {
             } else {
                 console.error(e);
             }
+            setLoading(false);
         }
     }
 
@@ -115,7 +123,7 @@ const Page = ({params}) => {
                                 </div>
                             </div>
 
-                                <button className={`dashboard-submit-btn`} type={`submit`}>Save Changes</button>
+                            <SubmitBtn loading={loading} text={`Save Changes`} />
                         </form>
                         ) : (
                         <p>Loading...</p>
