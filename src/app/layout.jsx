@@ -1,3 +1,4 @@
+import 'animate.css/animate.min.css';
 import "@/styles/globals.css";
 import {figtree, gfs_didot} from "@/app/font";
 import {ToastContainer, Zoom} from "react-toastify";
