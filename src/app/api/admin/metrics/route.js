@@ -1,38 +1,27 @@
-import {connectToDB} from "@/utils/database";
-import User from "@/models/user";
-import Item from "@/models/item";
-import Category from "@/models/category";
 import {getCorsHeaders} from "@/app/api/options";
-import Supplier from "@/models/supplier";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/app/api/auth/[...nextauth]/route";
+import axios from "axios";
+
+const METRICS_BASE_URL = 'https://prior-lauree-makechi-b2d9cdc0.koyeb.app/api/v1/metrics';
 
 export async function GET(request) {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
 
+    const {accessToken} = await getServerSession(authOptions);
+
     try {
-        await connectToDB();
+        const response = await axios.get(METRICS_BASE_URL, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
 
-        const totalUsers = await User.countDocuments({});
-        const totalItems = await Item.countDocuments({});
-        const totalCategories = await Category.countDocuments({});
-        const totalSuppliers = await Supplier.countDocuments({});
-
-        const recentUsers = await User.find({}).sort({ createdAt: -1 }).limit(5);
-        const recentItems = await Item.find({}).sort({ createdAt: -1 }).limit(5);
-        const recentCategories = await Category.find({}).sort({ createdAt: -1 }).limit(5);
-        const recentSuppliers = await Supplier.find({}).sort({ addedAt: -1 }).limit(5);
-
-        return new Response(JSON.stringify({
-            totalUsers,
-            totalItems,
-            totalCategories,
-            totalSuppliers,
-            recentUsers,
-            recentItems,
-            recentCategories,
-            recentSuppliers
-        }), { status: 200, headers });
+       return new Response(JSON.stringify(response.data), { status: response.status, headers });
     } catch (error) {
+        console.error(error);
         return new Response(JSON.stringify({ error: 'Failed to fetch metrics' }), { status: 500, headers });
     }
 }

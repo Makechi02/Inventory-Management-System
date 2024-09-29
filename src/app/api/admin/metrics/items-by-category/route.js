@@ -1,40 +1,25 @@
-import {connectToDB} from "@/utils/database";
-import Item from "@/models/item";
 import {getCorsHeaders} from "@/app/api/options";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/app/api/auth/[...nextauth]/route";
+import axios from "axios";
+
+const METRICS_BASE_URL = 'https://prior-lauree-makechi-b2d9cdc0.koyeb.app/api/v1/metrics';
 
 export async function GET(request) {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
 
+    const {accessToken} = await getServerSession(authOptions);
+
     try {
-        await connectToDB();
-        const itemsByCategory = await Item.aggregate([
-            {
-                $group: {
-                    _id: "$category",
-                    count: { $sum: 1 }
-                }
-            },
-            {
-                $lookup: {
-                    from: "categories",
-                    localField: "_id",
-                    foreignField: "_id",
-                    as: "category"
-                }
-            },
-            {
-                $unwind: "$category"
-            },
-            {
-                $project: {
-                    _id: 1,
-                    count: 1,
-                    categoryName: "$category.name"
-                }
+        const response = await axios.get(`${METRICS_BASE_URL}/items-by-category`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
             }
-        ]);
-        return new Response(JSON.stringify(itemsByCategory), {status: 200, headers});
+        });
+
+        return new Response(JSON.stringify(response.data), {status: response.status, headers});
     } catch (e) {
         console.error(e);
         return new Response(JSON.stringify({message: 'Error fetching items by category', e}), {status: 500, headers});

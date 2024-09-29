@@ -1,17 +1,25 @@
-import {connectToDB} from "@/utils/database";
-import Item from "@/models/item";
 import {getCorsHeaders} from "@/app/api/options";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/app/api/auth/[...nextauth]/route";
+import axios from "axios";
+
+const METRICS_BASE_URL = 'https://prior-lauree-makechi-b2d9cdc0.koyeb.app/api/v1/metrics';
 
 export async function GET(request) {
     const origin = request.headers.get('origin');
     const headers = getCorsHeaders(origin);
 
-    try {
-        await connectToDB();
+    const {accessToken} = await getServerSession(authOptions);
 
-        const items = await Item.find({}, 'name quantity price');
-        const totalValue = items.reduce((sum, item) => sum + (item.quantity * item.price), 0);
-        return new Response(JSON.stringify(totalValue), {status: 200, headers});
+    try {
+        const response = await axios.get(`${METRICS_BASE_URL}/inventory-valuation`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+
+        return new Response(JSON.stringify(response.data), {status: response.status, headers});
     } catch (e) {
         console.error(e);
         return new Response(JSON.stringify({message: 'Error fetching inventory value', e}), {status: 500, headers});

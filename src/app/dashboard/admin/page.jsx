@@ -129,9 +129,16 @@ const Dashboard = () => {
                 .catch(error => console.error(error));
         }
 
+        const getStockLevels = () => {
+            MetricService.getStockLevels()
+                .then(response => console.log(response.data))
+                .catch(error => console.error(error));
+        }
+
         fetchMetrics();
         getInventoryValuation();
         getItemsByCategory();
+        getStockLevels();
     }, []);
 
     return (
