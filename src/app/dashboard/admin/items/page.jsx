@@ -208,7 +208,7 @@ const ItemsTable = ({items, handleDelete, page, totalPages, setPage, toggleDropd
                     </div>
                 ))}
 
-                <Pagination currentPage={page + 1} totalPages={totalPages} onPageChange={setPage} />
+                <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
             </div>
         ));
 };
