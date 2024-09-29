@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import {useEffect, useState} from "react";
-import {signIn} from "next-auth/react";
+import {signIn, signOut} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import {motion} from "framer-motion";
+import {jwtDecode} from "jwt-decode";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -58,8 +59,20 @@ const Login = () => {
             return response.json();
         };
 
-        fetchSession().then(response => {
+        fetchSession().then(async response => {
             const session = response;
+
+            if (session.accessToken) {
+                const accessToken = session.accessToken;
+                const decodedToken = jwtDecode(accessToken);
+                const expiryTime = decodedToken.exp * 10000;
+                const currentTime = Date.now();
+
+                if (currentTime > expiryTime) {
+                    await signOut({callbackUrl: '/accounts/login'});
+                }
+            }
+
             if (session.user) {
                 const role = session.user.role;
                 router.push(role === 'USER' ? "/dashboard/user" : "/dashboard/admin");
