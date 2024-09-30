@@ -5,7 +5,7 @@ import {useState} from "react";
 import {useRouter} from "next/navigation";
 import {toast} from "react-toastify";
 
-const UpdatePasswordForm = ({userId}) => {
+const UpdatePasswordForm = ({userId, role}) => {
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -37,18 +37,18 @@ const UpdatePasswordForm = ({userId}) => {
         if (!validatePassword()) return;
 
         try {
-            const response = await UserAuthService.updateUserPassword({userId, currentPassword, newPassword});
+            const response = await UserAuthService.updateUserPassword(userId, {currentPassword, newPassword});
 
             if (response.status === 200) {
                 toast.success("Password updated successfully");
-                router.push('/dashboard/admin/profile');
+                router.push(`/dashboard/${role.toLowerCase()}/profile`);
             } else {
                 toast.error("Failed to update password");
             }
         } catch (e) {
             console.error(e);
-            if (e.response.status === 400) {
-                toast.error("Current password is incorrect");
+            if (e?.response?.status === 400) {
+                toast.error(e?.response?.data?.message);
             } else {
                 toast.error("An error occurred while updating the password");
             }

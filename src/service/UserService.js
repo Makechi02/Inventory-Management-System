@@ -7,25 +7,19 @@ const USERS_AUTH_API_BASE_URL = "https://prior-lauree-makechi-b2d9cdc0.koyeb.app
 export const UserAuthService = {
     saveUser: (user) => {
         return axios.post(`${USERS_AUTH_API_BASE_URL}/register`, user, {
-            headers: {
-                "Content-Type": "application/json"
-            }
+            headers: { "Content-Type": "application/json" }
         });
     },
 
-    updateUserPassword: (data) => {
-        return axios.post(`${USERS_AUTH_API_BASE_URL}/update-password`, data, {
-            headers: {
-                "Content-Type": "application/json"
-            }
+    updateUserPassword: (userId, data) => {
+        return axios.post(`${USERS_AUTH_API_BASE_URL}/update-password/${userId}`, data, {
+            headers: { "Content-Type": "application/json" }
         });
     },
 
     login: (credentials) => {
         return axios.post(`${USERS_AUTH_API_BASE_URL}/login`, credentials, {
-            headers: {
-                "Content-Type": "application/json"
-            }
+            headers: { "Content-Type": "application/json" }
         })
     },
 }
