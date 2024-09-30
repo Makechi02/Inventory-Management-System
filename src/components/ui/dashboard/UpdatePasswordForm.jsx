@@ -1,9 +1,9 @@
 "use client"
 
-import {UserAuthService} from "@/service/UserService";
 import {useState} from "react";
 import {useRouter} from "next/navigation";
 import {toast} from "react-toastify";
+import {UserAuthService} from "@/service";
 
 const UpdatePasswordForm = ({userId, role}) => {
     const [currentPassword, setCurrentPassword] = useState("");

@@ -10,7 +10,7 @@ const Page = async () => {
             <h2 className={`font-gfs_didot font-bold text-2xl`}>Security</h2>
             <p className={`text-sm text-gray-600`}>Manage your security preferences</p>
 
-            <UpdatePasswordForm userId={user.id} />
+            <UpdatePasswordForm userId={user.id} role={user.role} />
         </div>
     )
 }

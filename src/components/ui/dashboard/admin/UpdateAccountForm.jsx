@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import {useEffect, useState} from "react";
-import {UserService} from "@/service/UserService";
 import {signOut} from "next-auth/react";
+import {UserService} from "@/service";
 
 const UpdateAccountForm = ({user}) => {
     const [name, setName] = useState(user.name);

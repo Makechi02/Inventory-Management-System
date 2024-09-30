@@ -2,10 +2,10 @@
 
 import {useState} from "react";
 import {useRouter} from "next/navigation";
-import {UserAuthService} from "@/service/UserService";
 import BackBtn from "@/components/ui/dashboard/BackBtn";
 import {toast} from "react-toastify";
 import {SubmitBtn} from "@/components/ui/dashboard/Buttons";
+import {UserAuthService} from "@/service";
 
 const Page = () => {
     const [name, setName] = useState("");
@@ -90,9 +90,9 @@ const Page = () => {
                             </div>
 
                             <div className={`input-box`}>
-                                <label htmlFor={`category`} className={`dashboard-label`}>Role:</label>
+                                <label htmlFor={`role`} className={`dashboard-label`}>Role:</label>
                                 <select
-                                    id={`category`}
+                                    id={`role`}
                                     value={role}
                                     className={`dashboard-input`}
                                     onChange={event => setRole(event.target.value)}

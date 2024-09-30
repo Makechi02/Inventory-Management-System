@@ -3,11 +3,9 @@
 import BackBtn from "@/components/ui/dashboard/BackBtn";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
-import CategoryService from "@/service/CategoryService";
-import SupplierService from "@/service/SupplierService";
-import ItemService from "@/service/ItemService";
 import {toast} from "react-toastify";
 import {SubmitBtn} from "@/components/ui/dashboard/Buttons";
+import {CategoryService, ItemService, SupplierService} from "@/service";
 
 const Page = ({params}) => {
     const [item, setItem] = useState({});

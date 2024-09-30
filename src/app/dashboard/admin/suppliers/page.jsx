@@ -8,9 +8,9 @@ import {SupplierCard} from "@/components/ui/dashboard/admin/TableCards";
 import SearchForm from "@/components/ui/dashboard/admin/SearchForm";
 import {useRouter, useSearchParams} from "next/navigation";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import SupplierService from "@/service/SupplierService";
 import {showConfirmDialog} from "@/utils/sweetalertUtil";
 import {toast} from "react-toastify";
+import {SupplierService} from "@/service";
 
 const Page = () => {
     const [suppliers, setSuppliers] = useState([]);

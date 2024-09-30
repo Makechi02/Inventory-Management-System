@@ -5,13 +5,13 @@ import {FaTrashCan} from "react-icons/fa6";
 import Link from "next/link";
 import {useEffect, useState} from "react";
 import {UserCard} from "@/components/ui/dashboard/admin/TableCards";
-import {UserService} from "@/service/UserService";
 import DateUtil from "@/utils/dateUtil";
 import SearchForm from "@/components/ui/dashboard/admin/SearchForm";
 import {useRouter, useSearchParams} from "next/navigation";
 import {showConfirmDialog} from "@/utils/sweetalertUtil";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import {toast} from "react-toastify";
+import {UserService} from "@/service";
 
 const Page = () => {
     const [loading, setLoading] = useState(true);

@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from "react";
 import DashboardChart from "@/components/ui/dashboard/admin/DashboardChart";
-import MetricService from "@/service/MetricService";
+import {MetricService} from "@/service";
 
 const Dashboard = () => {
     const [metrics, setMetrics] = useState({

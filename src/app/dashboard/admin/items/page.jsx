@@ -5,15 +5,14 @@ import {FaEllipsisVertical, FaTrashCan} from 'react-icons/fa6';
 import Link from 'next/link';
 import {useEffect, useRef, useState} from 'react';
 import {useRouter, useSearchParams} from 'next/navigation';
-import ItemService from '@/service/ItemService';
 import {ItemCard} from '@/components/ui/dashboard/admin/TableCards';
 import SearchForm from '@/components/ui/dashboard/admin/SearchForm';
 import FiltersModal from '@/components/ui/dashboard/admin/FiltersModal';
-import CategoryService from '@/service/CategoryService';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Pagination from "@/components/ui/dashboard/admin/items/Pagination";
 import {showConfirmDialog} from "@/utils/sweetalertUtil";
 import {toast} from "react-toastify";
+import {CategoryService, ItemService} from "@/service";
 
 const Page = () => {
     const [items, setItems] = useState([]);

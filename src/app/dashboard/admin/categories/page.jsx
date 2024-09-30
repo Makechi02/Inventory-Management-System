@@ -4,7 +4,6 @@ import {FaPen} from "react-icons/fa";
 import {FaTrashCan} from "react-icons/fa6";
 import Link from "next/link";
 import {useEffect, useState} from "react";
-import CategoryService from "@/service/CategoryService";
 import {CategoryCard} from "@/components/ui/dashboard/admin/TableCards";
 import SearchForm from "@/components/ui/dashboard/admin/SearchForm";
 import {useRouter, useSearchParams} from "next/navigation";
@@ -12,6 +11,7 @@ import DateUtil from "@/utils/dateUtil";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import {showConfirmDialog} from "@/utils/sweetalertUtil";
 import {toast} from "react-toastify";
+import {CategoryService} from "@/service";
 
 const Page = () => {
     const [categories, setCategories] = useState([]);

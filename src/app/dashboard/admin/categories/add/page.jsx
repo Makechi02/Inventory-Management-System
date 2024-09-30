@@ -4,8 +4,8 @@ import BackBtn from "@/components/ui/dashboard/BackBtn";
 import {useState} from "react";
 import {useRouter} from "next/navigation";
 import {toast} from "react-toastify";
-import CategoryService from "@/service/CategoryService";
 import {SubmitBtn} from "@/components/ui/dashboard/Buttons";
+import {CategoryService} from "@/service";
 
 const Page = () => {
     const [name, setName] = useState("");

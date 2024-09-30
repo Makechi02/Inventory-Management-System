@@ -8,9 +8,9 @@ import {FaTrashCan} from "react-icons/fa6";
 import BackBtn from "@/components/ui/dashboard/BackBtn";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import {showConfirmDialog} from "@/utils/sweetalertUtil";
-import SupplierService from "@/service/SupplierService";
 import {toast} from "react-toastify";
 import {useRouter} from "next/navigation";
+import {SupplierService} from "@/service";
 
 const Page = ({params}) => {
     const [supplier, setSupplier] = useState({});

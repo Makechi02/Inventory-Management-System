@@ -18,9 +18,7 @@ const SupplierService = {
 
     updateSupplier: (id, supplier) => {
         return axios.put(`${SUPPLIERS_API_BASE_URL}/${id}`, supplier, {
-            headers: {
-                "Content-Type": "application/json"
-            }
+            headers: { "Content-Type": "application/json" }
         });
     },
 

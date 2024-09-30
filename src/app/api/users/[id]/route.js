@@ -43,7 +43,9 @@ export const PUT = async (request, { params }) => {
         return new Response(JSON.stringify(response?.data), { status: 200, headers });
     } catch (e) {
         if (e.response.status === 400) {
-            return new Response(e.response.data.message, {status: 400, headers});
+            return new Response(e.response.data.message, { status: 400, headers });
+        } else if (e.status === 409) {
+            return new Response(e.response.data.message, { status: 409, headers });
         } else {
             console.error(e.response);
             return new Response("Failed to update user", { status: 500, headers });

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import {FaPen} from "react-icons/fa";
 import {useEffect, useState} from "react";
-import ItemService from "@/service/ItemService";
 import DateUtil from "@/utils/dateUtil";
 import {FaTrashCan} from "react-icons/fa6";
 import BackBtn from "@/components/ui/dashboard/BackBtn";
@@ -11,6 +10,7 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import {showConfirmDialog} from "@/utils/sweetalertUtil";
 import {useRouter} from "next/navigation";
 import {toast} from "react-toastify";
+import {ItemService} from "@/service";
 
 const Page = ({params}) => {
     const [item, setItem] = useState({});

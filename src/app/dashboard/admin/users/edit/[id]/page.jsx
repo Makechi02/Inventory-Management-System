@@ -2,10 +2,10 @@
 
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
-import {UserService} from "@/service/UserService";
 import BackBtn from "@/components/ui/dashboard/BackBtn";
 import {toast} from "react-toastify";
 import {SubmitBtn} from "@/components/ui/dashboard/Buttons";
+import {UserService} from "@/service";
 
 const Page = ({params}) => {
     const [user, setUser] = useState({});
@@ -48,10 +48,11 @@ const Page = ({params}) => {
                 router.back();
             }
         } catch (e) {
-            if (e.status === 400) {
+            if (e.status === 400 || e.status === 409) {
                 toast.error(e.response.data);
             } else {
                 console.error(e);
+                toast.error("Failed to update user. Try again");
             }
             setLoading(false);
         }
@@ -61,7 +62,10 @@ const Page = ({params}) => {
         const fetchItemByID = () => {
             UserService.getUserById(params.id)
                 .then(response => setUser(response.data))
-                .catch(error => console.error(error));
+                .catch(error => {
+                    console.error(error);
+                    toast.error("Failed to fetch user. Try again")
+                });
         }
 
         fetchItemByID();
@@ -97,10 +101,10 @@ const Page = ({params}) => {
                                 </div>
 
                                 <div className={`input-box`}>
-                                    <label htmlFor={`brand`} className={`dashboard-label`}>Email:</label>
+                                    <label htmlFor={`email`} className={`dashboard-label`}>Email:</label>
                                     <input
-                                        type={`text`}
-                                        id={`brand`}
+                                        type={`email`}
+                                        id={`email`}
                                         value={email}
                                         autoComplete={`off`}
                                         onChange={event => setEmail(event.target.value)}
@@ -109,9 +113,9 @@ const Page = ({params}) => {
                                 </div>
 
                                 <div className={`input-box`}>
-                                    <label htmlFor={`category`} className={`dashboard-label`}>Role:</label>
+                                    <label htmlFor={`role`} className={`dashboard-label`}>Role:</label>
                                     <select
-                                        id={`category`}
+                                        id={`role`}
                                         value={role}
                                         onChange={event => setRole(event.target.value)}
                                         className={`dashboard-input`}
