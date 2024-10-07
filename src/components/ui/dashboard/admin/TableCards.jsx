@@ -110,3 +110,25 @@ export const SupplierCard = ({supplier, handleDelete}) => {
         </div>
     )
 }
+
+export const CustomerCard = ({customer, handleDelete}) => {
+    return (
+        <div className={`bg-gray-100 shadow rounded-lg p-4 mt-3`}>
+            <Card title={`name`} text={customer.name}/>
+            <Card title={`phone`} text={customer.phone}/>
+            <Card title={`address`} text={customer.address}/>
+            <div className={`flex flex-wrap gap-2 justify-between items-center text-sm font-medium text-gray-500 mt-2`}>
+                <span>Actions:</span>
+                <div className={`flex`}>
+                    <Link title={`View`} className={`edit-btn`} href={`/dashboard/admin/customers/${customer.id}`}>
+                        <FaEye/>
+                    </Link>
+                    <Link title={`Edit`} className={`ml-3 edit-btn`} href={`/dashboard/admin/customers/edit/${customer.id}`}>
+                        <FaPen/>
+                    </Link>
+                    <button className={`ml-3 delete-btn`} title={`Delete`} onClick={handleDelete}><FaTrashCan/></button>
+                </div>
+            </div>
+        </div>
+    )
+}

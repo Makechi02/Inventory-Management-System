@@ -34,7 +34,8 @@ const AdminNavLinks = ({toggleNavbar}) => {
         { link: 'Dashboard', href: '/dashboard/admin' },
         { link: 'Items', href: '/dashboard/admin/items' },
         { link: 'Categories', href: '/dashboard/admin/categories' },
-        {link: 'Suppliers', href: '/dashboard/admin/suppliers'},
+        { link: 'Suppliers', href: '/dashboard/admin/suppliers' },
+        { link: 'Customers', href: '/dashboard/admin/customers' },
         { link: 'Users', href: '/dashboard/admin/users' },
     ];
 
@@ -61,7 +62,7 @@ const NavLinks = ({toggleNavbar}) => {
 
     const pathname = usePathname();
 
-        return (
+    return (
         <>
             {navLinks.map((link, index) => {
                 const isActive = pathname.endsWith(link.href);
