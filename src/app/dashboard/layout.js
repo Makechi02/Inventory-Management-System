@@ -30,7 +30,7 @@ const Layout = async ({children}) => {
                 {children}
             </div>
         </div>
-    )
+    );
 }
 
 export default Layout;

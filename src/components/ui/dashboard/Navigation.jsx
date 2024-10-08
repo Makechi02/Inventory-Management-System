@@ -12,22 +12,17 @@ const PrimaryNavigation = ({role}) => {
     )
 }
 
-const MobileNavigation = ({showNavbar, toggleNavbar, role}) => {
+const MobileNavigation = ({ showNavbar, toggleNavbar, role }) => {
     return (
-        <nav
-            className={`block sm:hidden bg-[#00000099] h-screen fixed left-0 top-0 w-full px-4 ${!showNavbar && 'hidden sm:flex'}`}>
-            <button
-                onClick={toggleNavbar}
-                className={`text-white absolute top-4 left-8 text-lg border rounded-full p-1`}
-            >
-                <FaTimes/>
-            </button>
-            <ul className={`divide-y relative top-16 bg-white shadow-2xl w-full rounded-lg p-2`}>
-                {role === 'ADMIN' ? <AdminNavLinks toggleNavbar={toggleNavbar}/> : <NavLinks toggleNavbar={toggleNavbar}/>}
+        <nav className={`block sm:hidden bg-white shadow-xl rounded-lg fixed top-0 left-0 w-full z-50 transition-transform transform ${showNavbar ? "translate-y-0" : "-translate-y-full"} duration-300`}>
+            <button onClick={toggleNavbar} className={`absolute top-4 right-4 text-gray-700`}><FaTimes /></button>
+            <ul className={`divide-y divide-gray-300 p-4`}>
+                {role === 'ADMIN' ? <AdminNavLinks toggleNavbar={toggleNavbar} /> : <NavLinks toggleNavbar={toggleNavbar} />}
             </ul>
         </nav>
-    )
-}
+    );
+};
+
 
 const AdminNavLinks = ({toggleNavbar}) => {
     const navLinks = [

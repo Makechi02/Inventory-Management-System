@@ -6,9 +6,7 @@ import {MobileNavigation, PrimaryNavigation} from "@/components/ui/dashboard/Nav
 
 const Navbar = ({role}) => {
     const [showNavbar, setShowNavbar] = useState(false);
-    const toggleNavbar = () => {
-        setShowNavbar(prevState => !prevState);
-    }
+    const toggleNavbar = () => setShowNavbar(prevState => !prevState);
 
     return (
         <div className={`h-full`}>
